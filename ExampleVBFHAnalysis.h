@@ -534,9 +534,9 @@ ExampleVBFHAnalysis::ExampleVBFHAnalysis(TTree *tree) : fChain(0)
 {
 
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("event_vbf_inv_8000_output.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("hepmcoutputUPDATE.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("event_vbf_inv_8000_output.root");
+         f = new TFile("hepmcoutputUPDATE.root");
       }
       f->GetObject("Delphes",tree);
 
