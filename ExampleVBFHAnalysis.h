@@ -498,9 +498,16 @@ public :
    TH1D* _fNJets;
    TH1D* _fJetPT;
    TH1D* _fJetMass;
+   TH1D* _fMjj;
+   TH1D* _fDeltaEta;
+   TH1D* _fDeltaPhi;
+   TH1D* _fEtaDP;
+   TH1D* _fMET;
    TH1D* _fGenJetPT;
    TH1D* _f1stJetPT;
+   TH1D* _fJetEta1;
    TH1D* _f2ndJetPT;
+   TH1D* _fJetEta2;
    TH1D* _fJetEta;
    TH1D* _fHT;
    TH1D* _fJetPhi;
@@ -521,9 +528,11 @@ public :
    std::vector<Float_t> particlestatus;
    std::vector<Float_t> particlepts;
    std::vector<TLorentzVector> higgs;
-   
+   std::vector<TLorentzVector> jets;
 
    TLorentzVector Higgs;
+   TLorentzVector Jet1;
+   TLorentzVector Jet2;
 
 };
 
@@ -534,9 +543,9 @@ ExampleVBFHAnalysis::ExampleVBFHAnalysis(TTree *tree) : fChain(0)
 {
 
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("hepmcoutputUPDATE.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("event_vbf_inv_8000_output.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("hepmcoutputUPDATE.root");
+         f = new TFile("event_vbf_inv_8000_output.root");
       }
       f->GetObject("Delphes",tree);
 
