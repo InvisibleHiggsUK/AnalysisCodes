@@ -6,7 +6,7 @@
 // Here go the offline cuts:
 //    pT(j1),pT(j2) > 50 GeV
 //    |eta| < 4.7
-//    eta(j1),eta(j2) < 0
+//    eta(j1).eta(j2) < 0
 //    Delta(eta_jj) > 4.2
 //    Di-jet mass > 1100 GeV
 //    MET > 130 GeV
@@ -17,7 +17,7 @@ class Selection{
 
  public:
   
-  static float GetEntries() { return 1000; }
+  //static float GetEntries() { return 1000; }
   
   static float NJets() { return 2; } 
   
@@ -25,13 +25,15 @@ class Selection{
   
   static float JetEtaCut() { return 4.7; } 
   
-  static float JetMassesCut() { return 1100; }
+  static float JetEtaDPCut() { return 0; } 
+  
+  static float InvJetMassCut() { return 1100; }
   
   static float DeltaPhiJJCut() { return 1; } 
   
   static float DeltaEtaJJCut() { return 4.2; } 
   
-  static float METCut() { return 130; }
+  static float METCut() { return 150; }
   
 
 };
