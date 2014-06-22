@@ -38,9 +38,16 @@ void ExampleVBFHAnalysis::processEvents()
   _fNJets = new TH1D("NJets", "NJets" , 100, 0, 20);
   _fJetPT = new TH1D("JetPT","JetPT",100, 0, 300);
   _fJetMass = new TH1D("JetMass","JetMass",100, 0.0, 300);
+  _fMjj = new TH1D("InvJetMass","InvJetMass",100,0.0,3000);
+  _fDeltaEta = new TH1D("DeltaEtaJJ","DeltaEtaJJ",100, 3, 10);
+  _fDeltaPhi = new TH1D("DeltaPhiJJ","DeltaPhiJJ",100, -6,6);
+  _fEtaDP = new TH1D("EtaDP","EtaDP",100, -10, 2);
+  _fMET = new TH1D("MET","MET",100, 100, 500);
   _fGenJetPT = new TH1D("GenJetPT","GenJetPT",100, 0.0, 300);
   _f1stJetPT = new TH1D("1stJetPT","1stJetPT", 100, 0, 300);
+  _fJetEta1 = new TH1D("JetEta1","JetEta1",100,-10,10);
   _f2ndJetPT = new TH1D("2ndJetPT","2ndJetPT",100, 0, 300);
+  _fJetEta2 = new TH1D("JetEta2","JetEta2",100, -10, 10);
   _fJetEta = new TH1D("JetEta","JetEta", 100, -5, 5);
   _fJetPhi = new TH1D("JetPhi","JetPhi", 100, -4, 4);
   _fScalarHT = new TH1D("ScalarHT","ScalarHT",100, 0, 300);
@@ -51,8 +58,8 @@ void ExampleVBFHAnalysis::processEvents()
 
 
 
-  //    _nEvt = fChain->GetEntriesFast();       // Get total number of entries
-  _nEvt = 1000;     
+  _nEvt = fChain->GetEntriesFast();       // Get total number of entries
+  //  _nEvt = 1000;     
   Long64_t nbytes =0 , nb = 0;
 
    for (Long64_t entry=0; entry<_nEvt;entry++) {       
@@ -79,34 +86,73 @@ Int_t ExampleVBFHAnalysis::Analysis()
 
   for(Int_t i=0; i < _nJets; i++){
    
-    njets.push_back(Jet_size);                   // Transfering array information to vectors
-    _fNJets->Fill(njets.at(i));
+      njets.push_back(Jet_size);                   // Transfering array information to vectors
+      jetpts.push_back(Jet_PT[i]);
+      jeteta.push_back(Jet_Eta[i]);
+      jetphi.push_back(Jet_Phi[i]);
+      jetmass.push_back(Jet_Mass[i]);
 
-    jetpts.push_back(Jet_PT[i]);
-    jeteta.push_back(Jet_Eta[i]);
-    jetphi.push_back(Jet_Phi[i]);
-    jetmass.push_back(Jet_Mass[i]);
-    if(jetpts.at(i) > Selection::JetPTCut() ) {
-      _fJetPT->Fill(jetpts.at(i));
+      _fNJets->Fill(njets.at(i));
+
+      if(njets.size() > Selection::NJets() ){
+
+      Jet1.SetPtEtaPhiM(jetpts.at(0),jeteta.at(0),jetphi.at(0),jetmass.at(0));
+      jets.push_back(Jet1);
+      Jet2.SetPtEtaPhiM(jetpts.at(1),jeteta.at(1),jetphi.at(1),jetmass.at(1));
+      jets.push_back(Jet2);
+      
+      Float_t mjj = (Jet1 + Jet2).M();
+      Float_t EtaDP = Jet1.Eta()*Jet2.Eta();
+      Float_t DeltaEta = Jet1.Eta() - Jet2.Eta();
+      Float_t DeltaPhi = Jet1.Phi() - Jet2.Phi();
+      Float_t MET = MissingET_MET[0];
+
+      // Apply the Jet PT baseline-cuts
+      if(jets.at(0).Pt() && jets.at(1).Pt() < Selection::JetPTCut() ) continue;
+
+      // Apply the Mjj baseline-cuts
+      if( mjj < Selection::InvJetMassCut() ) continue;
+
+      // Apply the Delta Eta j1, j2 baseline-cuts
+      if( DeltaEta < Selection::DeltaEtaJJCut() ) continue;
+
+      // Apply the Delta Phi j1, j2 baseline-cuts
+      if( DeltaPhi > Selection::DeltaPhiJJCut() ) continue;
+
+      // Apply the Eta scalar product baseline-cuts 
+      if( EtaDP > Selection::JetEtaDPCut() ) continue;
+
+      // Apply the absolute value of Eta baseline-cuts
+      if( abs(jets.at(0).Eta()) && abs(jets.at(1).Eta()) > Selection::JetEtaCut() ) continue;
+
+      // Apply the MET baseline cuts
+      if( MET < Selection::METCut() ) continue;
+      
+
+      // Fill histograms
+      _fMjj->Fill(mjj);
+      _fDeltaEta->Fill(DeltaEta);
+      _fDeltaPhi->Fill(DeltaPhi);
+      _fEtaDP->Fill(EtaDP);
+      _fMET->Fill(MET);
+      _f1stJetPT->Fill(jetpts.at(0));
+      _fJetEta1->Fill(jets.at(0).Eta());
+      _f1stJetMass->Fill(jetmass.at(0));
+      _f2ndJetPT->Fill(jetpts.at(1));  
+      _f2ndJetMass->Fill(jetmass.at(1));
+      _fJetEta2->Fill(jets.at(1).Eta());
       _fJetMass->Fill(jetmass.at(i));
       _fJetEta->Fill(jeteta.at(i));
       _fJetPhi->Fill(jetphi.at(i));
-    
+      
       HT += jetpts.at(i);                          // Note this the conventional definition of HT, a Delphes equivalent exists 
       _fHT->Fill(HT);
-    }
-    
-	if(njets.size() > Selection::NJets() ) {
-	  _f1stJetPT->Fill(jetpts.at(0));
-	  _f1stJetMass->Fill(jetmass.at(0));
-	  _f2ndJetPT->Fill(jetpts.at(1));  
-	  _f2ndJetMass->Fill(jetmass.at(1));
-	}
-    }
-    _fScalarHT->Fill(ScalarHT_HT[0]);
-
-    Int_t _nGenJets = sizeof(GenJet_PT)/sizeof(GenJet_PT[0]);
-    
+      }
+  }
+  _fScalarHT->Fill(ScalarHT_HT[0]);
+  
+  Int_t _nGenJets = sizeof(GenJet_PT)/sizeof(GenJet_PT[0]);
+  
     for(Int_t j=0; j < _nGenJets; j++){
       ngenjets.push_back(GenJet_size);
       genjetpts.push_back(GenJet_PT[j]);
@@ -120,6 +166,7 @@ Int_t ExampleVBFHAnalysis::Analysis()
   jeteta.clear();
   jetphi.clear();
   jetmass.clear();
+  jets.clear();
 
   return 0;
 }
@@ -134,8 +181,9 @@ Int_t ExampleVBFHAnalysis::ParticleAnalysis(){
     particlepts.push_back(Particle_PT[i]);
     
     Int_t pdgCode = abs(particles.at(i));
-    
-    if(pdgCode == 25){
+    Int_t status = particlestatus.at(i);
+
+    if(pdgCode == 25 && status != 3){
       cout << "Found a Higgs" << endl;
       Higgs.SetPxPyPzE(Particle_Px[i],Particle_Py[i],Particle_Pz[i],Particle_E[i]);
       higgs.push_back(Higgs);
@@ -154,11 +202,17 @@ Int_t ExampleVBFHAnalysis::Output()
 
   _fJetPT->Write();
   _fJetMass->Write();
+  _fMjj->Write();
+  _fDeltaEta->Write();
+  _fDeltaPhi->Write();
+  _fEtaDP->Write();
   _fGenJetPT->Write();
   _f1stJetPT->Write();
   _f2ndJetPT->Write();
   _f1stJetMass->Write();
   _f2ndJetMass->Write();
+  _fJetEta1->Write();
+  _fJetEta2->Write();
   _fJetEta->Write();
   _fJetPhi->Write();
   _fHT->Write();
