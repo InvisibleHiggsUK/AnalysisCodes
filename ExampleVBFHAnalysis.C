@@ -216,6 +216,7 @@ Int_t ExampleVBFHAnalysis::Output()
   _fJetEta->Write();
   _fJetPhi->Write();
   _fHT->Write();
+  _fMET->Write();
   _fNJets->Write();
   _fHiggsPT->Write();
   _rootFile->Write();
