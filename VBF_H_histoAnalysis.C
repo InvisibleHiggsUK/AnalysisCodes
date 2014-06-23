@@ -13,6 +13,8 @@ void VBF_H_histoAnalysis()
 {
 
   gROOT->Reset();
+  gStyle->SetOptStat(0);
+
   
   TString dirname = ".";
   TString rootname = "VBF_invH_8000_output.root";
@@ -28,7 +30,7 @@ void VBF_H_histoAnalysis()
   int n1 = tokens1->GetEntries();
   
   // For TH1D histograms
-  TString plots = "InvJetMass,DeltaEtaJJ,DeltaPhiJJ,1stJetPT,2ndJetPT,1stJetMass,2ndJetMass,JetEta1,JetEta2,EtaDP";
+  TString plots = "InvJetMass,DeltaEtaJJ,DeltaPhiJJ,1stJetPT,2ndJetPT,1stJetMass,2ndJetMass,JetEta1,JetEta2,EtaDP,MET";
   TObjArray* tokens = plots.Tokenize(",");
   int n = tokens->GetEntries();
 
