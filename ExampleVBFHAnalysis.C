@@ -124,33 +124,41 @@ Int_t ExampleVBFHAnalysis::Analysis()
     Float_t DeltaPhi = abs(abs(abs(Jet1.Phi() - Jet2.Phi()) - pi) - pi);
     Float_t MET = MissingET_MET[0];
 
-    if(Selection::JetCut(jets.at(0).Pt()) && Selection::JetCut(jets.at(1).Pt()) ) { nJetPT++; }
-    if(Selection::EtaCut(jets.at(0).Eta()) && Selection::EtaCut(jets.at(1).Eta()) ) { nEta++; }
-    if(Selection::PhiCut(DeltaPhi)) { nPhi++; }
-    if(Selection::METcut(MET)) { nMET++; }
-    if(Selection::MassCut(mjj)) { nJetMass++; }
-    if(Selection::DEtaCut(DeltaEta)) { nDEta++; }
-    if(Selection::DPEta(EtaDP)){ nDPEta++; } 
+    Bool_t Cut1 = Selection::JetCut(jets.at(0).Pt()) && Selection::JetCut(jets.at(1).Pt());
+    Bool_t Cut2 = Selection::EtaCut(jets.at(0).Eta()) && Selection::EtaCut(jets.at(1).Eta());
+    Bool_t Cut3 = Selection::PhiCut(DeltaPhi);
+    Bool_t Cut4 = Selection::METcut(MET);
+    Bool_t Cut5 = Selection::MassCut(mjj);
+    Bool_t Cut6 = Selection::DEtaCut(DeltaEta);
+    Bool_t Cut7 = Selection::DPEta(EtaDP);
 
+    if(Cut1){ nJetPT++; }
+    if(Cut2){ nEta++; }
+    if(Cut3){ nPhi++; }
+    if(Cut4){ nMET++; }
+    if(Cut5){ nJetMass++; }
+    if(Cut6){ nDEta++; }
+    if(Cut7){ nDPEta++; }
 
+    //    if(Selection::JetCut(jets.at(0).Pt()) && Selection::JetCut(jets.at(1).Pt()) ) { nJetPT++; }
+    //    if(Selection::EtaCut(jets.at(0).Eta()) && Selection::EtaCut(jets.at(1).Eta()) ) { nEta++; }
+    //    if(Selection::PhiCut(DeltaPhi)) { nPhi++; }
+    //    if(Selection::METcut(MET)) { nMET++; }
+    //    if(Selection::MassCut(mjj)) { nJetMass++; }
+    //    if(Selection::DEtaCut(DeltaEta)) { nDEta++; }
+    //    if(Selection::DPEta(EtaDP)){ nDPEta++; } 
     // Apply the Jet PT baseline-cuts
     /*   if(jets.at(0).Pt() && jets.at(1).Pt() < Selection::JetPTCut() ) continue;
-    
     // Apply the Eta scalar product baseline-cuts 
     if( EtaDP > Selection::JetEtaDPCut() ) continue;
-    
     // Apply the Delta Eta j1, j2 baseline-cuts
     if( DeltaEta < Selection::DeltaEtaJJCut() ) continue;
-    
     // Apply the MET baseline cuts
     if( MET < Selection::METCut() ) continue;
-    
     // Apply the Mjj baseline-cuts
     if( mjj < Selection::InvJetMassCut() ) continue;
-    
     // Apply the Delta Phi j1, j2 baseline-cuts
     if( DeltaPhi > Selection::DeltaPhiJJCut() ) continue;
-    
     // Apply the absolute value of Eta baseline-cuts
     if( abs(jets.at(0).Eta()) && abs(jets.at(1).Eta()) > Selection::JetEtaCut() ) continue;
     */
