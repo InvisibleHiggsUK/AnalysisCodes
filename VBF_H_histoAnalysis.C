@@ -30,7 +30,7 @@ void VBF_H_histoAnalysis()
   int n1 = tokens1->GetEntries();
   
   // For TH1D histograms
-  TString plots = "InvJetMass,DeltaEtaJJ,DeltaPhiJJ,1stJetPT,2ndJetPT,1stJetMass,2ndJetMass,JetEta1,JetEta2,EtaDP,MET";
+  TString plots = "InvJetMass,DeltaEtaJJ,DeltaPhiJJ,1stJetPT,2ndJetPT,JetEta1,EtaDP,MET";
   TObjArray* tokens = plots.Tokenize(",");
   int n = tokens->GetEntries();
 
@@ -86,7 +86,7 @@ void VBF_H_histoAnalysis()
   */
 
   c1.cd();
-  c1.SaveAs("VBF_invH_8TeV_HistoBoard.ps");
+  c1.SaveAs("VBF_invH_8TeV_Nminus1HistoBoard.pdf");
 
   // Plot TH1D histos
 
@@ -119,6 +119,6 @@ void VBF_H_histoAnalysis()
 
   c2.Print("VBF_invH_8TeV_Histos.pdf)");
   c1.cd();
-  c1.SaveAs("VBF_invH_8TeV_HistoBoard.ps");
+  c1.SaveAs("VBF_invH_8TeV_Nminus1HistoBoard.pdf");
 
 }
