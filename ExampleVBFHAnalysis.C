@@ -115,12 +115,11 @@ Int_t ExampleVBFHAnalysis::Analysis()
     jets.push_back(Jet1);
     Jet2.SetPtEtaPhiM(jetpts.at(1),jeteta.at(1),jetphi.at(1),jetmass.at(1));
     jets.push_back(Jet2);
-    
+
+    Float_t pi = 3.14159265;    
     Float_t mjj = (Jet1 + Jet2).M();
     Float_t EtaDP = Jet1.Eta()*Jet2.Eta();
     Float_t DeltaEta = Jet1.Eta() - Jet2.Eta();
-    //      Float_t DeltaPhi = Jet1.Phi() - Jet2.Phi();
-    Float_t pi = 3.14159265;
     Float_t DeltaPhi = abs(abs(abs(Jet1.Phi() - Jet2.Phi()) - pi) - pi);
     Float_t MET = MissingET_MET[0];
 
@@ -140,41 +139,19 @@ Int_t ExampleVBFHAnalysis::Analysis()
     if(Cut6){ nDEta++; }
     if(Cut7){ nDPEta++; }
 
-    //    if(Selection::JetCut(jets.at(0).Pt()) && Selection::JetCut(jets.at(1).Pt()) ) { nJetPT++; }
-    //    if(Selection::EtaCut(jets.at(0).Eta()) && Selection::EtaCut(jets.at(1).Eta()) ) { nEta++; }
-    //    if(Selection::PhiCut(DeltaPhi)) { nPhi++; }
-    //    if(Selection::METcut(MET)) { nMET++; }
-    //    if(Selection::MassCut(mjj)) { nJetMass++; }
-    //    if(Selection::DEtaCut(DeltaEta)) { nDEta++; }
-    //    if(Selection::DPEta(EtaDP)){ nDPEta++; } 
-    // Apply the Jet PT baseline-cuts
-    /*   if(jets.at(0).Pt() && jets.at(1).Pt() < Selection::JetPTCut() ) continue;
-    // Apply the Eta scalar product baseline-cuts 
-    if( EtaDP > Selection::JetEtaDPCut() ) continue;
-    // Apply the Delta Eta j1, j2 baseline-cuts
-    if( DeltaEta < Selection::DeltaEtaJJCut() ) continue;
-    // Apply the MET baseline cuts
-    if( MET < Selection::METCut() ) continue;
-    // Apply the Mjj baseline-cuts
-    if( mjj < Selection::InvJetMassCut() ) continue;
-    // Apply the Delta Phi j1, j2 baseline-cuts
-    if( DeltaPhi > Selection::DeltaPhiJJCut() ) continue;
-    // Apply the absolute value of Eta baseline-cuts
-    if( abs(jets.at(0).Eta()) && abs(jets.at(1).Eta()) > Selection::JetEtaCut() ) continue;
-    */
-    
     // Fill histograms
-    _fMjj->Fill(mjj);
-    _fDeltaEta->Fill(DeltaEta);
-    _fDeltaPhi->Fill(DeltaPhi);
-    _fEtaDP->Fill(EtaDP);
-    _fMET->Fill(MET);
-    _f1stJetPT->Fill(jetpts.at(0));
-    _fJetEta1->Fill(jets.at(0).Eta());
+    if(Cut1 && Cut2 && Cut3 && Cut4 && Cut6 && Cut7){ _fMjj->Fill(mjj); }
+    if(Cut1 && Cut2 && Cut3 && Cut4 && Cut5 && Cut7){ _fDeltaEta->Fill(DeltaEta); }
+    if(Cut1 && Cut2 && Cut4 && Cut5 && Cut6 && Cut7){ _fDeltaPhi->Fill(DeltaPhi); }
+    if(Cut1 && Cut3 && Cut4 && Cut5 && Cut6 && Cut7){ _fJetEta1->Fill(jets.at(0).Eta()); _fJetEta1->Fill(jets.at(1).Eta()); }
+    if(Cut1 && Cut2 && Cut3 && Cut5 && Cut6 && Cut7){ _fMET->Fill(MET); }
+    if(Cut2 && Cut3 && Cut4 && Cut5 && Cut6 && Cut7){ _f1stJetPT->Fill(jetpts.at(0)); }
+    if(Cut2 && Cut3 && Cut4 && Cut5 && Cut6 && Cut7){ _f2ndJetPT->Fill(jetpts.at(1)); }
+    if(Cut1 && Cut2 && Cut3 && Cut4 && Cut5 && Cut7){ _fEtaDP->Fill(EtaDP); }
+
     _f1stJetMass->Fill(jetmass.at(0));
-    _f2ndJetPT->Fill(jetpts.at(1));  
     _f2ndJetMass->Fill(jetmass.at(1));
-    _fJetEta2->Fill(jets.at(1).Eta());
+
 
 
     cout << "nJetPT: " << nJetPT << endl;
