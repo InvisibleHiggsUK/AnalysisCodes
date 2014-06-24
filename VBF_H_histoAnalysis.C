@@ -30,7 +30,7 @@ void VBF_H_histoAnalysis()
   int n1 = tokens1->GetEntries();
   
   // For TH1D histograms
-  TString plots = "InvJetMass,DeltaEtaJJ,DeltaPhiJJ,1stJetPT,2ndJetPT,JetEta1,EtaDP,MET";
+  TString plots = "InvJetMass,DeltaEtaJJ,DeltaPhiJJ,1stJetPT,2ndJetPT,JetEta1,EtaDP,MET,CJV";
   TObjArray* tokens = plots.Tokenize(",");
   int n = tokens->GetEntries();
 
