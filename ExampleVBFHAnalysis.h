@@ -502,6 +502,7 @@ public :
    TH1D* _fDeltaEta;
    TH1D* _fDeltaPhi;
    TH1D* _fEtaDP;
+   TH1D* _fCJV;
    TH1D* _fMET;
    TH1D* _fGenJetPT;
    TH1D* _f1stJetPT;
@@ -533,6 +534,7 @@ public :
    TLorentzVector Higgs;
    TLorentzVector Jet1;
    TLorentzVector Jet2;
+   TLorentzVector Jet3;
 
 };
 
