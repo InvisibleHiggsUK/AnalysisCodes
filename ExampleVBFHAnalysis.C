@@ -131,6 +131,10 @@ Int_t ExampleVBFHAnalysis::Analysis()
     jets.push_back(Jet2);
     Jet3.SetPtEtaPhiM(jetpts.at(2),jeteta.at(2),jetphi.at(2),jetmass.at(2));
     jets.push_back(Jet3);
+    Jet4.SetPtEtaPhiM(jetpts.at(3),jeteta.at(3),jetphi.at(3),jetmass.at(3));
+    jets.push_back(Jet4);
+    Jet5.SetPtEtaPhiM(jetpts.at(4),jeteta.at(4),jetphi.at(4),jetmass.at(4));
+    jets.push_back(Jet5);
 
     Float_t pi = 3.14159265;    
     Float_t mjj = (Jet1 + Jet2).M();
@@ -139,9 +143,11 @@ Int_t ExampleVBFHAnalysis::Analysis()
     Float_t DeltaPhi = abs(abs(abs(Jet1.Phi() - Jet2.Phi()) - pi) - pi);
     Float_t MET = MissingET_MET[0];
     
+
     if( jets.at(0).Eta() < jets.at(2).Eta() && jets.at(2).Eta() < jets.at(1).Eta() && jets.at(2).Pt() > 30 ) { _fCJV->Fill(jets.at(2).Pt()); }
     else if( jets.at(1).Eta() < jets.at(2).Eta() && jets.at(2).Eta() < jets.at(0).Eta() && jets.at(2).Pt() > 30 ) { _fCJV->Fill(jets.at(2).Pt()); }
-
+    else if( jets.at(1).Eta() < jets.at(3).Eta() && jets.at(3).Eta() < jets.at(0).Eta() && jets.at(3).Pt() > 30 ) { _fCJV->Fill(jets.at(3).Pt()); }
+    else if( jets.at(1).Eta() < jets.at(4).Eta() && jets.at(4).Eta() < jets.at(0).Eta() && jets.at(4).Pt() > 30 ) { _fCJV->Fill(jets.at(4).Pt()); }
 
     // Apply baseline-cuts
     Bool_t Cut0 = Selection::TriggerCuts(jets.at(0).Pt(),jets.at(1).Pt(),EtaDP,DeltaEta,mjj,MET);
@@ -150,7 +156,7 @@ Int_t ExampleVBFHAnalysis::Analysis()
     Bool_t Cut3 = Selection::DEtaCut(DeltaEta);
     Bool_t Cut4 = Selection::METcut(MET);
     Bool_t Cut5 = Selection::MassCut(mjj);
-    Bool_t Cut6 = Selection::CJVCut(jets.at(0).Eta(),jets.at(1).Eta(),jets.at(2).Eta(),jets.at(2).Pt());
+    Bool_t Cut6 = Selection::CJVCut(jets.at(0).Eta(),jets.at(1).Eta(),jets.at(2).Eta(),jets.at(2).Pt()) || Selection::CJVCut(jets.at(0).Eta(),jets.at(1).Eta(),jets.at(3).Eta(),jets.at(3).Pt());
     Bool_t Cut7 = Selection::PhiCut(DeltaPhi);
     Bool_t Cut8 = Selection::EtaCut(jets.at(0).Eta()) && Selection::EtaCut(jets.at(1).Eta());
 
@@ -190,14 +196,14 @@ Int_t ExampleVBFHAnalysis::Analysis()
     if(Cut0 && Cut1 && Cut2 && Cut3 && Cut4 && Cut5 && Cut6 && Cut7 && Cut8){ nYield8++; }
     
     cout << "nTrigger: " << nTrigger << endl;
-    cout << "nYield1: " << nYield1 << endl;
-    cout << "nYield2: " << nYield2 << endl;
-    cout << "nYield3: " << nYield3 << endl;
-    cout << "nYield4: " << nYield4 << endl;
-    cout << "nYield5: " << nYield5 << endl;
-    cout << "nYield6: " << nYield6 << endl;
-    cout << "nYield7: " << nYield7 << endl;
-    cout << "nYield8: " << nYield8 << endl;
+    cout << "nYield1: " << nYield1*weight << endl;
+    cout << "nYield2: " << nYield2*weight << endl;
+    cout << "nYield3: " << nYield3*weight << endl;
+    cout << "nYield4: " << nYield4*weight << endl;
+    cout << "nYield5: " << nYield5*weight << endl;
+    cout << "nYield6: " << nYield6*weight << endl;
+    cout << "nYield7: " << nYield7*weight << endl;
+    cout << "nYield8: " << nYield8*weight << endl;
 
 	  /*   cout << "nEta: " << nEta << endl;
     cout << "nDPhi: " << nDPhi << endl;
