@@ -27,6 +27,7 @@ class ExRootResult;
 using namespace std;
 
 Int_t nEvt;
+Int_t nTrigger;
 Int_t nJetPT;
 Int_t nEta;
 Int_t nDPhi;
@@ -134,18 +135,16 @@ Int_t ExampleVBFHAnalysis::Analysis()
     Float_t pi = 3.14159265;    
     Float_t mjj = (Jet1 + Jet2).M();
     Float_t EtaDP = Jet1.Eta()*Jet2.Eta();
-    Float_t DeltaEta = Jet1.Eta() - Jet2.Eta();
+    Float_t DeltaEta = abs(Jet1.Eta() - Jet2.Eta());
     Float_t DeltaPhi = abs(abs(abs(Jet1.Phi() - Jet2.Phi()) - pi) - pi);
     Float_t MET = MissingET_MET[0];
     
-    cout << "Jets.at(2).Eta(): " << jets.at(2).Eta() << endl;
-    cout << "Jets.at(2).Pt(): " << jets.at(2).Pt() << endl;
-
     if( jets.at(0).Eta() < jets.at(2).Eta() && jets.at(2).Eta() < jets.at(1).Eta() && jets.at(2).Pt() > 30 ) { _fCJV->Fill(jets.at(2).Pt()); }
     else if( jets.at(1).Eta() < jets.at(2).Eta() && jets.at(2).Eta() < jets.at(0).Eta() && jets.at(2).Pt() > 30 ) { _fCJV->Fill(jets.at(2).Pt()); }
 
 
     // Apply baseline-cuts
+    Bool_t Cut0 = Selection::TriggerCuts(jets.at(0).Pt(),jets.at(1).Pt(),EtaDP,DeltaEta,mjj,MET);
     Bool_t Cut1 = Selection::JetCut(jets.at(0).Pt()) && Selection::JetCut(jets.at(1).Pt());
     Bool_t Cut2 = Selection::DPEta(EtaDP);
     Bool_t Cut3 = Selection::DEtaCut(DeltaEta);
@@ -155,7 +154,8 @@ Int_t ExampleVBFHAnalysis::Analysis()
     Bool_t Cut7 = Selection::PhiCut(DeltaPhi);
     Bool_t Cut8 = Selection::EtaCut(jets.at(0).Eta()) && Selection::EtaCut(jets.at(1).Eta());
 
-    // Count independent no. events after baseline-cuts
+    // Count independent no. events passing baseline-cuts
+    if(Cut0){ nTrigger++; }
     if(Cut1){ nJetPT++; }
     if(Cut2){ nDPEta++; }
     if(Cut3){ nDEta++; }
@@ -165,29 +165,31 @@ Int_t ExampleVBFHAnalysis::Analysis()
     if(Cut7){ nDPhi++; }
     if(Cut8){ nEta++; }
 
+    Float_t weight=  0.66;
     // Fill N-1 histograms
-    if(Cut1 && Cut2 && Cut3 && Cut4 && Cut6 && Cut7 && Cut8){ _fMjj->Fill(mjj); }
-    if(Cut1 && Cut2 && Cut4 && Cut5 && Cut6 && Cut7 && Cut8){ _fDeltaEta->Fill(DeltaEta); }
-    if(Cut1 && Cut2 && Cut3 && Cut4 && Cut5 && Cut6 && Cut8){ _fDeltaPhi->Fill(DeltaPhi); }
-    if(Cut1 && Cut2 && Cut3 && Cut4 && Cut5 && Cut6 && Cut7){ _fJetEta1->Fill(jets.at(0).Eta()); _fJetEta1->Fill(jets.at(1).Eta()); }
-    if(Cut1 && Cut2 && Cut3 && Cut5 && Cut6 && Cut7 && Cut8){ _fMET->Fill(MET); }
-    if(Cut2 && Cut3 && Cut4 && Cut5 && Cut6 && Cut7 && Cut8){ _f1stJetPT->Fill(jetpts.at(0)); }
-    if(Cut2 && Cut3 && Cut4 && Cut5 && Cut6 && Cut7 && Cut8){ _f2ndJetPT->Fill(jetpts.at(1)); }
-    if(Cut1 && Cut3 && Cut4 && Cut5 && Cut6 && Cut7 && Cut8){ _fEtaDP->Fill(EtaDP); }
+    if(Cut1 && Cut2 && Cut3 && Cut4 && Cut6 && Cut7 && Cut8){ _fMjj->Fill(mjj,weight); }
+    if(Cut1 && Cut2 && Cut4 && Cut5 && Cut6 && Cut7 && Cut8){ _fDeltaEta->Fill(DeltaEta,weight); }
+    if(Cut1 && Cut2 && Cut3 && Cut4 && Cut5 && Cut6 && Cut8){ _fDeltaPhi->Fill(DeltaPhi,weight); }
+    if(Cut1 && Cut2 && Cut3 && Cut4 && Cut5 && Cut6 && Cut7){ _fJetEta1->Fill(jets.at(0).Eta(),weight); _fJetEta1->Fill(jets.at(1).Eta(),weight); }
+    if(Cut1 && Cut2 && Cut3 && Cut5 && Cut6 && Cut7 && Cut8){ _fMET->Fill(MET,weight); }
+    if(Cut2 && Cut3 && Cut4 && Cut5 && Cut6 && Cut7 && Cut8){ _f1stJetPT->Fill(jetpts.at(0),weight); }
+    if(Cut2 && Cut3 && Cut4 && Cut5 && Cut6 && Cut7 && Cut8){ _f2ndJetPT->Fill(jetpts.at(1),weight); }
+    if(Cut1 && Cut3 && Cut4 && Cut5 && Cut6 && Cut7 && Cut8){ _fEtaDP->Fill(EtaDP,weight); }
 
     _f1stJetMass->Fill(jetmass.at(0));
     _f2ndJetMass->Fill(jetmass.at(1));
 
     // Calculate surviving events for yield
-    if(Cut1){ nYield1++; }
-    if(Cut1 && Cut2){ nYield2++; }
-    if(Cut1 && Cut2 && Cut3){ nYield3++;}
-    if(Cut1 && Cut2 && Cut3 && Cut4){ nYield4++; }
-    if(Cut1 && Cut2 && Cut3 && Cut4 && Cut5){ nYield5++; }
-    if(Cut1 && Cut2 && Cut3 && Cut4 && Cut5 && Cut6){ nYield6++; }
-    if(Cut1 && Cut2 && Cut3 && Cut4 && Cut5 && Cut6 && Cut7){ nYield7++; }
-    if(Cut1 && Cut2 && Cut3 && Cut4 && Cut5 && Cut6 && Cut7 && Cut8){ nYield8++; }
-
+    if(Cut0 && Cut1){ nYield1++; }
+    if(Cut0 && Cut1 && Cut2){ nYield2++; }
+    if(Cut0 && Cut1 && Cut2 && Cut3){ nYield3++;}
+    if(Cut0 && Cut1 && Cut2 && Cut3 && Cut4){ nYield4++; }
+    if(Cut0 && Cut1 && Cut2 && Cut3 && Cut4 && Cut5){ nYield5++; }
+    if(Cut0 && Cut1 && Cut2 && Cut3 && Cut4 && Cut5 && Cut6){ nYield6++; }
+    if(Cut0 && Cut1 && Cut2 && Cut3 && Cut4 && Cut5 && Cut6 && Cut7){ nYield7++; }
+    if(Cut0 && Cut1 && Cut2 && Cut3 && Cut4 && Cut5 && Cut6 && Cut7 && Cut8){ nYield8++; }
+    
+    cout << "nTrigger: " << nTrigger << endl;
     cout << "nYield1: " << nYield1 << endl;
     cout << "nYield2: " << nYield2 << endl;
     cout << "nYield3: " << nYield3 << endl;
@@ -197,8 +199,7 @@ Int_t ExampleVBFHAnalysis::Analysis()
     cout << "nYield7: " << nYield7 << endl;
     cout << "nYield8: " << nYield8 << endl;
 
-    /*    cout << "nJetPT: " << nJetPT << endl;
-    cout << "nEta: " << nEta << endl;
+	  /*   cout << "nEta: " << nEta << endl;
     cout << "nDPhi: " << nDPhi << endl;
     cout << "nMET: " << nMET << endl;
     cout << "nJetMass: " << nJetMass << endl;
