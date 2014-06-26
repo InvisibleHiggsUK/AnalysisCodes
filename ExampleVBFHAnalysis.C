@@ -1,4 +1,4 @@
-//////////////////////////////////////
+/////////////////////////////////////
 //
 //  Analysis for VBV Invisible Higgs
 //
@@ -104,7 +104,7 @@ void ExampleVBFHAnalysis::processEvents()
       this->Analysis();
       this->ParticleAnalysis();
       this->Output();
-         }
+   }
 }
 
 Int_t ExampleVBFHAnalysis::Analysis()
@@ -148,7 +148,12 @@ Int_t ExampleVBFHAnalysis::Analysis()
     Float_t mjj = (Jet1 + Jet2).M();
     Float_t EtaDP = Jet1.Eta()*Jet2.Eta();
     Float_t DeltaEta = abs(Jet1.Eta() - Jet2.Eta());
-    Float_t DeltaPhi = abs(abs(abs(Jet1.Phi() - Jet2.Phi()) - pi) - pi);
+    //    Float_t DeltaPhi = abs(abs(abs(Jet1.Phi() - Jet2.Phi()) - pi) - pi);
+    Float_t DeltaPhi = (Jet1.Phi() - Jet2.Phi());
+    if(-1*pi < DeltaPhi && DeltaPhi < pi){ DeltaPhi = DeltaPhi + 0; }
+    else if(DeltaPhi > pi){ DeltaPhi = DeltaPhi - 2*pi; }
+    else if(DeltaPhi <= -pi){ DeltaPhi = DeltaPhi + 2*pi; } 
+
     Float_t MET = MissingET_MET[0];
     
     // Fill pre baseline-cuts histos
@@ -168,6 +173,7 @@ Int_t ExampleVBFHAnalysis::Analysis()
     else if( jets.at(1).Eta() < jets.at(3).Eta() && jets.at(3).Eta() < jets.at(0).Eta()  ) { _fCJV->Fill(jets.at(3).Pt()); }
     else if( jets.at(1).Eta() < jets.at(4).Eta() && jets.at(4).Eta() < jets.at(0).Eta() ) { _fCJV->Fill(jets.at(4).Pt()); }
 
+    //    cout << "jets.at(0).PT() : " << jets.at(0).Pt() << "/" << "jets.at(1).Pt() : " << jets.at(1).Pt() << "/" << "EtaDP: " << EtaDP << "/ DeltaEta: " << DeltaEta << "/ mjj: " << mjj << "/ MET: " << MET << endl;
     // Apply baseline-cuts
     Bool_t CutTrigger = Selection::TriggerCuts(jets.at(0).Pt(),jets.at(1).Pt(),EtaDP,DeltaEta,mjj,MET);
     Bool_t Cut0 = Selection::EtaCut(jets.at(0).Eta()) && Selection::EtaCut(jets.at(1).Eta());
@@ -192,7 +198,7 @@ Int_t ExampleVBFHAnalysis::Analysis()
     if(Cut7){ nDPhi++; }
 
 
-    Float_t weight1 = 1;
+    Float_t weight1 = 0.657;
     // Fill N-1 histograms
     if(Cut0 && Cut1 && Cut2 && Cut3 && Cut4 && Cut6 && Cut7){ _fMjj->Fill(mjj,weight1); }
     if(Cut0 && Cut1 && Cut2 && Cut4 && Cut5 && Cut6 && Cut7){ _fDeltaEta->Fill(DeltaEta,weight1); }
@@ -243,7 +249,7 @@ Int_t ExampleVBFHAnalysis::Analysis()
     
   }
   
-  Float_t weight = 1;
+  Float_t weight = 0.657;
   cout << "nTrigger: " << nTrigger*weight << endl;
   
   cout << "nYield1 = dijet PT: " << nYield1*weight << "  " << nYield1/nTrigger << "  " << nYield1/nTrigger  << endl;
@@ -307,7 +313,7 @@ Int_t ExampleVBFHAnalysis::ParticleAnalysis(){
 Int_t ExampleVBFHAnalysis::Output()
 {
 
-  TFile *_rootFile = new TFile("VBF_invH_h2_8000_output.root","RECREATE");
+  TFile *_rootFile = new TFile("VBF_invH_8000_output.root1","RECREATE");
 
   _fJetPT->Write();
   _fJetMass->Write();
