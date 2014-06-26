@@ -30,7 +30,7 @@ void VBF_H_histoAnalysis()
   int n1 = tokens1->GetEntries();
   
   // For TH1D histograms
-  TString plots = "InvJetMass,DeltaEtaJJ,DeltaPhiJJ,1stJetPT,2ndJetPT,JetEta1,EtaDP,MET,CJV";
+  TString plots = "InvJetMass,DeltaEtaJJ,DeltaPhiJJ,1stJetPT,2ndJetPT,JetEta1,,JetEta2,EtaDP,MET,CJV";
   TObjArray* tokens = plots.Tokenize(",");
   int n = tokens->GetEntries();
 
@@ -86,7 +86,7 @@ void VBF_H_histoAnalysis()
   */
 
   c1.cd();
-  c1.SaveAs("VBF_invH_8TeV_Nminus1HistoBoard.pdf");
+  c1.SaveAs("VBF_invH_8TeV_Nminus1HistoBoard_rebinned.pdf");
 
   // Plot TH1D histos
 
@@ -101,17 +101,19 @@ void VBF_H_histoAnalysis()
 
       ci_1.cd();
       hi->Draw(style);
-      hi->Scale(1/hi->GetEntries());
+      gPad->SetLogy();
+      //      hi->Scale(1/hi->GetEntries());
       hi->GetXaxis()->SetTitle((const Char_t*) (plot));
       hi->GetYaxis()->SetTitle("Entries");
       ci_1.SaveAs((const Char_t*) (plot + ".pdf"));
 
       c1.cd(i+1);
       hi->Draw(style);
-
+      gPad->SetLogy();
 
       c2.cd();
       hi->Draw(style);
+      gPad->SetLogy();
       c2.Print("VBF_invH_8TeV_Histos.pdf(");
 
     }	   
@@ -119,6 +121,6 @@ void VBF_H_histoAnalysis()
 
   c2.Print("VBF_invH_8TeV_Histos.pdf)");
   c1.cd();
-  c1.SaveAs("VBF_invH_8TeV_Nminus1HistoBoard.pdf");
+  c1.SaveAs("VBF_invH_8TeV_Nminus1HistoBoard_rebinned.pdf");
 
 }
