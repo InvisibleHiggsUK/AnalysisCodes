@@ -26,13 +26,13 @@ using namespace std;
 
 const Int_t kMaxEvent = 1;
 const Int_t kMaxRwgt = 1;
-const Int_t kMaxParticle = 5;
+const Int_t kMaxParticle = 1082;
 const Int_t kMaxTrack = 820;
 const Int_t kMaxTower = 2753;
 const Int_t kMaxEFlowTrack = 820;
 const Int_t kMaxEFlowTower = 2574;
-const Int_t kMaxGenJet = 2;
-const Int_t kMaxJet = 6;
+const Int_t kMaxGenJet = 11;
+const Int_t kMaxJet = 8;
 const Int_t kMaxElectron = 1;
 const Int_t kMaxPhoton = 3;
 const Int_t kMaxMuon = 1;
@@ -517,6 +517,18 @@ public :
    TH1D* _f2ndJetMass;
    TH1D* _fHiggsPT;
 
+   // Pre baseline cuts histos
+
+   TH1D* fJetPT1_precut;
+   TH1D* fJetPT2_precut;
+   TH1D* fEtaDP_precut;
+   TH1D* fDeltaEta_precut;
+   TH1D* fMET_precut;
+   TH1D* fInvMass_precut;
+   TH1D* fCJV_precut;
+   TH1D* fDeltaPhi_precut;
+
+
    std::vector<Int_t> njets;
    std::vector<Float_t> jetpts;
    std::vector<Float_t> genjetpts;
@@ -547,9 +559,9 @@ ExampleVBFHAnalysis::ExampleVBFHAnalysis(TTree *tree) : fChain(0)
 {
 
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("event_vbf_inv_8000_outputISR.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("event_vbf_h2_8000_output.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("event_vbf_inv_8000_outputISR.root");
+         f = new TFile("event_vbf_h2_8000_output.root");
       }
       f->GetObject("Delphes",tree);
 
