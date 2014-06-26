@@ -1,4 +1,4 @@
-//////////////////////////////////////
+/////////////////////////////////////
 //
 //  Analysis for VBF Invisible Higgs
 //
@@ -559,9 +559,9 @@ ExampleVBFHAnalysis::ExampleVBFHAnalysis(TTree *tree) : fChain(0)
 {
 
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("event_vbf_h2_8000_output.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("event_vbf_inv_8000_output_all_switches1.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("event_vbf_h2_8000_output.root");
+         f = new TFile("event_vbf_inv_8000_output_all_switches1.root");
       }
       f->GetObject("Delphes",tree);
 
