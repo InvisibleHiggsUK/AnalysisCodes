@@ -118,7 +118,7 @@ void ExampleVBFHAnalysis::processEvents()
       this->ParticleAnalysis();
       this->Output();
       
-
+      // Print out results
       if(entry == (_nEvt - 1)){
 	
 	cout << "nTRigger : "<< nTrigger*weight << endl;
@@ -137,7 +137,7 @@ Int_t ExampleVBFHAnalysis::Analysis()
 {
   
   Int_t _nJets = sizeof(Jet_PT)/sizeof(Jet_PT[0]);
- Long64_t HT = 0;
+  Long64_t HT = 0;
   Int_t njets30 = 0;
 
   for(Int_t i=0; i < _nJets; i++){
@@ -176,18 +176,11 @@ Int_t ExampleVBFHAnalysis::Analysis()
     Jet5.SetPtEtaPhiM(jetpts.at(4),jeteta.at(4),jetphi.at(4),jetmass.at(4));
     jets.push_back(Jet5);
     
-
-
     Float_t pi = 3.14159265;    
     Float_t mjj = (Jet1 + Jet2).M();
     Float_t EtaDP = Jet1.Eta()*Jet2.Eta();
     Float_t DeltaEta = abs(Jet1.Eta() - Jet2.Eta());
     Float_t DeltaPhi = abs(abs(abs(Jet1.Phi() - Jet2.Phi()) - pi) - pi);
-    //    Float_t DeltaPhi = (Jet1.Phi() - Jet2.Phi());
-    /*    if(-1*pi < DeltaPhi && DeltaPhi < pi){ DeltaPhi = DeltaPhi + 0; }
-    else if(DeltaPhi > pi){ DeltaPhi = DeltaPhi - 2*pi; }
-    else if(DeltaPhi <= -pi){ DeltaPhi = DeltaPhi + 2*pi; } */
-
     Float_t MET = MissingET_MET[0];
     
     
