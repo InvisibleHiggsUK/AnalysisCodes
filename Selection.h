@@ -39,7 +39,7 @@ class Selection{
 
   static bool DPEta(float etaDP){ return etaDP < 0; }
 
-  static bool CJVCut(float eta1, float eta2, float eta3, float pt3){ return (eta1 < eta3 && eta3 < eta2 && pt3 > 30) || (eta2 < eta3 && eta3 < eta1 && pt3 > 30); }
+  static bool CJVCut(float eta1, float eta2, float eta3, float pt3){ return ((eta1 < eta3 && eta3 < eta2 && pt3 > 30) || (eta2 < eta3 && eta3 < eta1 && pt3 > 30)); }
 
 
 
