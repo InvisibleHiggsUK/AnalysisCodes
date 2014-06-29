@@ -8,6 +8,7 @@
 #include "TChain.h"
 #include "TFile.h"
 #include "TString.h"
+#include "TBranch.h"
 
 class Event{
  public:
@@ -27,7 +28,7 @@ class Event{
   Double_t* JET1PHI() const { return jet1phi_; }
   Double_t* JET1M() const { return jet1m_; }
   Double_t* JET2PT() const { return jet2pt_; } 
-  Float_t* JET2ETA() const { return jet2eta_; }
+  Double_t* JET2ETA() const { return jet2eta_; }
   Double_t* JET2PHI() const { return jet2phi_; }
   Double_t* JET2M() const { return jet2m_; }
   Double_t MET() const { return met_; } 
@@ -38,6 +39,7 @@ class Event{
   Double_t* JET3PHI() const { return jet3phi_; }
   Double_t* JET3M() const { return jet3m_; }
   
+
 
  private:
   const unsigned int maxColSize_;
@@ -91,8 +93,6 @@ Event::Event(const TString &fileName, int numProcessed)
 
   nTotEvts_ = ( numProcessed < 0 ) ? chain_->GetEntries() : std::min(numProcessed,static_cast<int>(chain_->GetEntries()));
   
-  // Problem arises before HERE
-
   chain_->SetBranchAddress("jet1Index",&jet1index_);
   chain_->SetBranchAddress("jet1Pt",jet1pt_);
   chain_->SetBranchAddress("jet1Eta",jet1eta_);
@@ -114,7 +114,7 @@ Event::Event(const TString &fileName, int numProcessed)
 
 Event::~Event(){
   for(unsigned int i=0; i < maxColSize_; ++i){
-    delete [] jet1pt_;
+    //    delete [] jet1pt_;
     delete [] jet1eta_;
     delete [] jet1phi_;
     delete [] jet1m_;
