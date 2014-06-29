@@ -1,0 +1,13 @@
+Fullsim ntuple analysis of Invisible Higgs samples (mh = 125 GeV).
+
+To run,
+
+$ root -l AnalyseNtuples.C\(<ntuple id>,<# events>\)
+
+where <ntuple id> is self explantory:
+
+1 for SignalM125_POWHEG.root
+
+Including -1 for <# events> run for all events
+
+
