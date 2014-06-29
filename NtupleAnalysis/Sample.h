@@ -24,7 +24,7 @@ TString Sample::fileNameFullSample(unsigned int id) {
   checkId(id);
   
   TString name("");
-  if (id =1) name += "SignalM125_POWHEG.root";
+  if (id == 1) name += "SignalM125_POWHEG.root";
 
   return name;
 }
@@ -33,7 +33,7 @@ TString Sample::toTString(unsigned int id){
   checkId(id);
   
   TString str("");
-  if( id ==1) str += "Data";
+  if( id == 1) str += "Data";
 
   return str;
 }
