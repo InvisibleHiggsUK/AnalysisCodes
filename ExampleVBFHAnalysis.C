@@ -60,18 +60,18 @@ void ExampleVBFHAnalysis::processEvents()
   _fNJets = new TH1D("NJets", "NJets" , 100, 0, 20);
   _fJetPT = new TH1D("JetPT","JetPT",100, 0, 300);
   _fJetMass = new TH1D("JetMass","JetMass",100, 0.0, 300);
-  _fMjj = new TH1D("InvJetMass","InvJetMass",50,0.0,4000);
-  _fDeltaEta = new TH1D("DeltaEtaJJ","DeltaEtaJJ",50, 0, 10);
-  _fDeltaPhi = new TH1D("DeltaPhiJJ","DeltaPhiJJ",50, 0,4);
+  _fMjj = new TH1D("InvJetMass","InvJetMass",40,0.0,4000);
+  _fDeltaEta = new TH1D("DeltaEtaJJ","DeltaEtaJJ",50, 0, 8);
+  _fDeltaPhi = new TH1D("DeltaPhiJJ","DeltaPhiJJ",63, 0,4);
   _fEtaDP = new TH1D("EtaDP","EtaDP",50, -10, 2);
   _fCJEt = new TH1D("CJEt","CJEt",30,0, 150);
   _fCJEta = new TH1D("CJEta","CJEta",50, -5, 5);
   _fCJVCut = new TH1D("CJVCut","CJVCut",30, 0, 150);
   _fMET = new TH1D("MET","MET",50, 0, 500);
   _fGenJetPT = new TH1D("GenJetPT","GenJetPT",100, 0.0, 300);
-  _f1stJetPT = new TH1D("1stJetPT","1stJetPT", 100, 0, 400);
+  _f1stJetPT = new TH1D("Jet1PT","Jet1PT", 80, 0, 400);
   _fJetEta1 = new TH1D("JetEta1","JetEta1",50,-10,10);
-  _f2ndJetPT = new TH1D("2ndJetPT","2ndJetPT",50, 0, 300);
+  _f2ndJetPT = new TH1D("Jet2PT","Jet2PT",60, 0, 300);
   _fJetEta2 = new TH1D("JetEta2","JetEta2",50, -10, 10);
   _fJetEta = new TH1D("JetEta","JetEta", 50, -5, 5);
   _fNjets30 = new TH1D("Njets30","Njets30",10, 0, 10);
@@ -83,8 +83,8 @@ void ExampleVBFHAnalysis::processEvents()
   _fHiggsPT = new TH1D("HiggsPT","HiggsPT",100, 0.0, 300);
 
   // Pre baseline cut histo
-  fJetPT1_precut = new TH1D("JetPT1_precut","JetPT1_precut",50,0,400);
-  fJetPT2_precut = new TH1D("JetPT2_precut","JetPT2_precut",50,0,400);
+  fJetPT1_precut = new TH1D("JetPT1_precut","JetPT1_precut",80,0,400);
+  fJetPT2_precut = new TH1D("JetPT2_precut","JetPT2_precut",80,0,400);
   fEtaDP_precut  = new TH1D("EtaDP_precut","EtaDP_precut",50, -10, 3);
   fJetEta1_precut = new TH1D("JetEta1_precut","JetEta1_precut",50, -10, 10);
   fJetEta2_precut = new TH1D("JetEta2_precut","JetEta2_precut",50, -10, 10);
@@ -98,7 +98,8 @@ void ExampleVBFHAnalysis::processEvents()
   //  _nEvt = 1000;     
   Long64_t nbytes =0 , nb = 0;
 
-  Float_t weight = Selection::Weight(_nEvt);
+  //  Float_t weight = Selection::Weight(_nEvt);
+  Float_t weight = 1;
 
   for (Long64_t entry=0; entry<_nEvt;entry++) {       
     Long64_t ientry = LoadTree(entry);
@@ -117,7 +118,7 @@ void ExampleVBFHAnalysis::processEvents()
     // Print out results
     if(entry == (_nEvt - 1)){
       cout << "nTrigger        : " << nTrigger*weight << endl;
-      cout << "dijet PT        : " << nYield1*weight << "  " << nYield1/nTrigger << "  " << nYield1/nTrigger  << endl;
+      cout << "dijet PT        : " << nYield1*weight << "  " << nYield1/nTrigger << "  " << nYield1/nTrigger << endl;
       cout << "Eta(j1).Eta(j2) : " << nYield2*weight << "  " << nYield2/nTrigger << "  " << nYield2/nYield1 << endl;
       cout << "DeltaEta(j1j2)  : " << nYield3*weight << "  " << nYield3/nTrigger << "  " << nYield3/nYield2 << endl;
       cout << "MET             : " << nYield4*weight << "  " << nYield4/nTrigger << "  " << nYield4/nYield3 << endl;
@@ -134,9 +135,10 @@ Int_t ExampleVBFHAnalysis::Analysis()
   Int_t _nJets = sizeof(Jet_PT)/sizeof(Jet_PT[0]);
   Long64_t HT = 0;
   Int_t njets30 = 0;
-
+  
+  // Switching arrays to vectors
   for(Int_t i=0; i < _nJets; i++){
-   
+    
     njets.push_back(Jet_size);                  // njets is always 6 here since it is the size of array defined in the header
     jetpts.push_back(Jet_PT[i]);                // jetpts vector is probably a better alternative in finding no. of jets per event
     jeteta.push_back(Jet_Eta[i]);
@@ -148,14 +150,15 @@ Int_t ExampleVBFHAnalysis::Analysis()
     _fJetEta->Fill(jeteta.at(i));
     _fJetPhi->Fill(jetphi.at(i));
     
-    HT += jetpts.at(i);                          // Note this the conventional definition of HT, a Delphes equivalent exists 
+    HT += jetpts.at(i);
     _fHT->Fill(HT);
 
     if(jetpts.at(i) > 30){ njets30++; }
   }
+  // Numver of jets above 30 GeV
   _fNjets30->Fill(njets30);
   
-
+  // Requires at least 2 jets
   if(njets.size() > Selection::NJets() ){
       
     Jet1.SetPtEtaPhiM(jetpts.at(0),jeteta.at(0),jetphi.at(0),jetmass.at(0));
@@ -169,7 +172,7 @@ Int_t ExampleVBFHAnalysis::Analysis()
     Jet5.SetPtEtaPhiM(jetpts.at(4),jeteta.at(4),jetphi.at(4),jetmass.at(4));
     jets.push_back(Jet5);
     
-    Float_t pi = 3.14159265;    
+    // Construct kinematic variables 
     Float_t mjj = (Jet1 + Jet2).M();
     Float_t EtaDP = Jet1.Eta()*Jet2.Eta();
     Float_t DeltaEta = abs(Jet1.Eta() - Jet2.Eta());
@@ -190,12 +193,13 @@ Int_t ExampleVBFHAnalysis::Analysis()
     fDeltaPhi_precut->Fill(DeltaPhi);
 
 
-    // Fill Central Jet Et for jet being vetoed 
-    Float_t weight2 = 0.657;
-    if(Selection::CJVCut(jets.at(0).Eta(),jets.at(1).Eta(),jets.at(2).Eta(),jets.at(2).Pt())){ _fCJEt->Fill(jets.at(2).Et()); _fCJEta->Fill(jets.at(2).Eta(),weight2); }
+    // Fill Central Jet Et for jet being vetoed ie lies inbetween tag jet pair and has Pt > 30
+    //    Float_t weight2 = 0.657;
+    Float_t weight2 = 1;
+    if(Selection::CJVCut(jets.at(0).Eta(),jets.at(1).Eta(),jets.at(2).Eta(),jets.at(2).Pt()))     { _fCJEt->Fill(jets.at(2).Et()); _fCJEta->Fill(jets.at(2).Eta(),weight2); }
     else if(Selection::CJVCut(jets.at(0).Eta(),jets.at(1).Eta(),jets.at(3).Eta(),jets.at(3).Pt())){ _fCJEt->Fill(jets.at(3).Et()); _fCJEta->Fill(jets.at(3).Eta(),weight2); }
     else if(Selection::CJVCut(jets.at(0).Eta(),jets.at(1).Eta(),jets.at(4).Eta(),jets.at(4).Pt())){ _fCJEt->Fill(jets.at(4).Et()); _fCJEta->Fill(jets.at(4).Eta(),weight2); }
-
+    
     // Apply baseline-cuts
     Bool_t CutTrigger = Selection::TriggerCuts(jets.at(0).Pt(),jets.at(1).Pt(),EtaDP,DeltaEta,mjj,MET);
     Bool_t Cut0       = Selection::EtaCut(abs(jets.at(0).Eta())) && Selection::EtaCut(abs(jets.at(1).Eta()));
@@ -205,21 +209,21 @@ Int_t ExampleVBFHAnalysis::Analysis()
     Bool_t Cut4       = Selection::METcut(MET);
     Bool_t Cut5       = Selection::MassCut(mjj);
     Bool_t Cut6       = Selection::CJVCut(jets.at(0).Eta(),jets.at(1).Eta(),jets.at(2).Eta(),jets.at(2).Pt()) || Selection::CJVCut(jets.at(0).Eta(),jets.at(1).Eta(),jets.at(3).Eta(),jets.at(3).Pt());
-    Bool_t Cut7 = Selection::PhiCut(DeltaPhi);
+    Bool_t Cut7       = Selection::PhiCut(DeltaPhi);
 
     // Count independent no. events passing baseline-cuts
     if(CutTrigger){ nTrigger++; }
-    if(Cut0){ nEta++; }
-    if(Cut1){ nJetPT++; }
-    if(Cut2){ nDPEta++; }
-    if(Cut3){ nDEta++; }
-    if(Cut4){ nMET++; }
-    if(Cut5){ nJetMass++; }
-    if(!Cut6){ nCJV++; }
-    if(Cut7){ nDPhi++; }
+    if(Cut0){       nEta++; }
+    if(Cut1){       nJetPT++; }
+    if(Cut2){       nDPEta++; }
+    if(Cut3){       nDEta++; }
+    if(Cut4){       nMET++; }
+    if(Cut5){       nJetMass++; }
+    if(!Cut6){      nCJV++; }
+    if(Cut7){       nDPhi++; }
 
-
-    Float_t weight1 = 0.657;
+    Float_t weight1 = 1;
+    //    Float_t weight1 = 0.657;  // Want this variable to be global 
     // Fill N-1 histograms
     if(Cut0 && Cut1 && Cut2 && Cut3 && Cut4 && !Cut6 && Cut7){ _fMjj->Fill(mjj,weight1); }
     if(Cut0 && Cut1 && Cut2 && Cut4 && Cut5 && !Cut6 && Cut7){ _fDeltaEta->Fill(DeltaEta,weight1); }
@@ -317,7 +321,7 @@ Int_t ExampleVBFHAnalysis::Output()
 {
 
 
-  TFile *_rootFile = new TFile("VBF_vbf_8000_outputTEST.root","RECREATE");
+  TFile *_rootFile = new TFile("VBF_h2_8000_outputTEST.root","RECREATE");
 
   _fJetPT->Write();
   _fJetMass->Write();
@@ -346,7 +350,7 @@ Int_t ExampleVBFHAnalysis::Output()
   _rootFile->Write();
   _rootFile->Close();
 
-  TFile *_rootFile1 = new TFile("VBF_vbf_8000_precut_outputTEST.root","RECREATE");
+  TFile *_rootFile1 = new TFile("VBF_h2_8000_precut_outputTEST.root","RECREATE");
   fJetPT1_precut->Write();
   fJetPT2_precut->Write();
   fEtaDP_precut->Write();
