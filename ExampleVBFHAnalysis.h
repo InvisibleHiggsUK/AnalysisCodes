@@ -551,6 +551,7 @@ public :
    std::vector<TLorentzVector> jets;
 
    TLorentzVector Higgs;
+   TLorentzVector Jeti;
    TLorentzVector Jet1;
    TLorentzVector Jet2;
    TLorentzVector Jet3;
@@ -562,18 +563,17 @@ public :
 #endif
 
 #ifdef ExampleVBFHAnalysis_cxx
+// Constructor taking a TTree as a parameter
 ExampleVBFHAnalysis::ExampleVBFHAnalysis(TTree *tree) : fChain(0) 
 {
-
-   if (tree == 0) {
-     TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("event_vbf_h2_8000_output.root");
-      if (!f || !f->IsOpen()) {
-	f = new TFile("event_vbf_h2_8000_output.root");
-      }
-      f->GetObject("Delphes",tree);
-
-   }
-   Init(tree);
+  if (tree == 0) {
+    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("event_h2_TEST_8000.root");
+    if (!f || !f->IsOpen()) {
+      f = new TFile("event_h2_TEST_8000.root");
+    }
+    f->GetObject("Delphes",tree);
+  }
+  Init(tree);
 }
 
 ExampleVBFHAnalysis::~ExampleVBFHAnalysis()
