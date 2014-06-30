@@ -18,7 +18,8 @@
 #include <iterator>
 #include <iostream>
 
-#include "Selection.h"      // Contains the necessary offline cuts
+#include "Selection.h"      // Contains the necessary offline & trigger cuts
+//#include "Parameters.h"
 
 class ExRootTreeTreader;
 class ExRootResult;
@@ -56,7 +57,6 @@ void ExampleVBFHAnalysis::processEvents()
   TH1::SetDefaultSumw2();
 
   // Book histograms
-
   _fNJets = new TH1D("NJets", "NJets" , 100, 0, 20);
   _fJetPT = new TH1D("JetPT","JetPT",100, 0, 300);
   _fJetMass = new TH1D("JetMass","JetMass",100, 0.0, 300);
@@ -64,7 +64,6 @@ void ExampleVBFHAnalysis::processEvents()
   _fDeltaEta = new TH1D("DeltaEtaJJ","DeltaEtaJJ",50, 0, 10);
   _fDeltaPhi = new TH1D("DeltaPhiJJ","DeltaPhiJJ",50, 0,4);
   _fEtaDP = new TH1D("EtaDP","EtaDP",50, -10, 2);
-  _fCJPt = new TH1D("CJPt","CJPt",50, 0, 150);
   _fCJEt = new TH1D("CJEt","CJEt",30,0, 150);
   _fCJEta = new TH1D("CJEta","CJEta",50, -5, 5);
   _fCJVCut = new TH1D("CJVCut","CJVCut",30, 0, 150);
@@ -92,45 +91,41 @@ void ExampleVBFHAnalysis::processEvents()
   fDeltaEta_precut = new TH1D("DeltaEta_precut","DeltaCut_precut",50, 0, 10);
   fMET_precut = new TH1D("MET_precut","MET_precut",50, 0, 500);
   fInvMass_precut = new TH1D("InvMass_precut","InvMass_precut",50, 0.0, 4000);
-  fCJPt_precut = new TH1D("CJPt_precut","CJPt_precut",50, 0.0, 150);
   fCJEt_precut = new TH1D("CJEt_precut","CJEt_precut",50, 0.0, 150);
   fDeltaPhi_precut = new TH1D("DeltaPhi_precut","DeltaPhi_precut",50, 0, 3.5);
 
   _nEvt = fChain->GetEntriesFast();       // Get total number of entries
   //  _nEvt = 1000;     
   Long64_t nbytes =0 , nb = 0;
-  Float_t xsec = 1.0;
-  Float_t IntLumi = (_nEvt/xsec)/1000;
-  Float_t IntLumiData = 19.5;
-  //  Float_t weight = IntLumiData/IntLumi;
-  Float_t weight =1;
 
-   for (Long64_t entry=0; entry<_nEvt;entry++) {       
-      Long64_t ientry = LoadTree(entry);
-      if (ientry < 0) break;
-      nb = fChain->GetEntry(entry);   nbytes += nb;
-      
-      cout << "***** NEW ENTRY[" << entry << "]" << endl;
+  Float_t weight = Selection::Weight(_nEvt);
 
-      if ( printout ) continue;
-
-      this->Analysis();
-      this->ParticleAnalysis();
-      this->Output();
-      
-      // Print out results
-      if(entry == (_nEvt - 1)){
-	
-	cout << "nTRigger : "<< nTrigger*weight << endl;
-	cout << "nYield1 = dijet PT: " << nYield1*weight << "  " << nYield1/nTrigger << "  " << nYield1/nTrigger  << endl;
-	cout << "nYield2 = Eta(j1).Eta(j2): " << nYield2*weight << "  " << nYield2/nTrigger << "  " << nYield2/nYield1 << endl;
-	cout << "nYield3 = DeltaEta(j1j2): " << nYield3*weight << "  " << nYield3/nTrigger << "  " << nYield3/nYield2 << endl;
-	cout << "nYield4 = MET: " << nYield4*weight << "  " << nYield4/nTrigger << "  " << nYield4/nYield3 << endl;
-	cout << "nYield5 = M(j1j2):  " << nYield5*weight << "  " << nYield5/nTrigger << "  " << nYield5/nYield4 << endl;
-	cout << "nYield6 = CJV: " << nYield6*weight << "  " << nYield6/nTrigger << "  " << nYield6/nYield5 << endl;
-	cout << "nYield7 = DeltaPhi(j1j2): " << nYield7*weight << "  " << nYield7/nTrigger << "  " << nYield7/nYield6 << endl;
-      }
-   }
+  for (Long64_t entry=0; entry<_nEvt;entry++) {       
+    Long64_t ientry = LoadTree(entry);
+    if (ientry < 0) break;
+    nb = fChain->GetEntry(entry);   nbytes += nb;
+    
+    cout << "***** NEW ENTRY[" << entry << "]" << endl;
+    
+    
+    if ( printout ) continue;
+    
+    this->Analysis();
+    this->ParticleAnalysis();
+    this->Output();
+    
+    // Print out results
+    if(entry == (_nEvt - 1)){
+      cout << "nTrigger        : " << nTrigger*weight << endl;
+      cout << "dijet PT        : " << nYield1*weight << "  " << nYield1/nTrigger << "  " << nYield1/nTrigger  << endl;
+      cout << "Eta(j1).Eta(j2) : " << nYield2*weight << "  " << nYield2/nTrigger << "  " << nYield2/nYield1 << endl;
+      cout << "DeltaEta(j1j2)  : " << nYield3*weight << "  " << nYield3/nTrigger << "  " << nYield3/nYield2 << endl;
+      cout << "MET             : " << nYield4*weight << "  " << nYield4/nTrigger << "  " << nYield4/nYield3 << endl;
+      cout << "M(j1j2)         : " << nYield5*weight << "  " << nYield5/nTrigger << "  " << nYield5/nYield4 << endl;
+      cout << "CJV             : " << nYield6*weight << "  " << nYield6/nTrigger << "  " << nYield6/nYield5 << endl;
+      cout << "DeltaPhi(j1j2)  : " << nYield7*weight << "  " << nYield7/nTrigger << "  " << nYield7/nYield6 << endl;
+    }
+  }
 }
 
 Int_t ExampleVBFHAnalysis::Analysis()
@@ -156,15 +151,13 @@ Int_t ExampleVBFHAnalysis::Analysis()
     HT += jetpts.at(i);                          // Note this the conventional definition of HT, a Delphes equivalent exists 
     _fHT->Fill(HT);
 
-
     if(jetpts.at(i) > 30){ njets30++; }
-
-
   }
   _fNjets30->Fill(njets30);
   
+
   if(njets.size() > Selection::NJets() ){
-    
+      
     Jet1.SetPtEtaPhiM(jetpts.at(0),jeteta.at(0),jetphi.at(0),jetmass.at(0));
     jets.push_back(Jet1);
     Jet2.SetPtEtaPhiM(jetpts.at(1),jeteta.at(1),jetphi.at(1),jetmass.at(1));
@@ -183,7 +176,6 @@ Int_t ExampleVBFHAnalysis::Analysis()
     Float_t DeltaPhi = abs(abs(abs(Jet1.Phi() - Jet2.Phi()) - pi) - pi);
     Float_t MET = MissingET_MET[0];
     
-    
     // Fill pre baseline-cuts histos
     fJetPT1_precut->Fill(jets.at(0).Pt());
     fJetPT2_precut->Fill(jets.at(1).Pt());
@@ -193,38 +185,26 @@ Int_t ExampleVBFHAnalysis::Analysis()
     fJetEta1_precut->Fill(jets.at(0).Eta());
     fJetEta2_precut->Fill(jets.at(1).Eta());
     fInvMass_precut->Fill(mjj);
-    fCJPt_precut->Fill(jets.at(2).Pt());
-    fCJPt_precut->Fill(jets.at(3).Pt());
     fCJEt_precut->Fill(jets.at(2).Et());
     fCJEt_precut->Fill(jets.at(3).Et());
     fDeltaPhi_precut->Fill(DeltaPhi);
 
-    // Fill Central Jet Pt for jet lying inbetween tag jet pair
-    if( jets.at(0).Eta() < jets.at(2).Eta() && jets.at(2).Eta() < jets.at(1).Eta() ) { _fCJPt->Fill(jets.at(2).Pt()); }
-    else if( jets.at(0).Eta() < jets.at(3).Eta() && jets.at(3).Eta() < jets.at(1).Eta() ) { _fCJPt->Fill(jets.at(2).Pt()); }
-    else if( jets.at(1).Eta() < jets.at(3).Eta() && jets.at(3).Eta() < jets.at(0).Eta()  ) { _fCJPt->Fill(jets.at(3).Pt()); }
-    else if( jets.at(1).Eta() < jets.at(4).Eta() && jets.at(4).Eta() < jets.at(0).Eta() ) { _fCJPt->Fill(jets.at(4).Pt()); }
 
     // Fill Central Jet Et for jet being vetoed 
-    Float_t weight2 = 1;
+    Float_t weight2 = 0.657;
     if(Selection::CJVCut(jets.at(0).Eta(),jets.at(1).Eta(),jets.at(2).Eta(),jets.at(2).Pt())){ _fCJEt->Fill(jets.at(2).Et()); _fCJEta->Fill(jets.at(2).Eta(),weight2); }
     else if(Selection::CJVCut(jets.at(0).Eta(),jets.at(1).Eta(),jets.at(3).Eta(),jets.at(3).Pt())){ _fCJEt->Fill(jets.at(3).Et()); _fCJEta->Fill(jets.at(3).Eta(),weight2); }
     else if(Selection::CJVCut(jets.at(0).Eta(),jets.at(1).Eta(),jets.at(4).Eta(),jets.at(4).Pt())){ _fCJEt->Fill(jets.at(4).Et()); _fCJEta->Fill(jets.at(4).Eta(),weight2); }
- 
-   
-
-
-    //    cout << "jets.at(0).PT() : " << jets.at(0).Pt() << "/" << "jets.at(1).Pt() : " << jets.at(1).Pt() << "/" << "EtaDP: " << EtaDP << "/ DeltaEta: " << DeltaEta << "/ mjj: " << mjj << "/ MET: " << MET << endl;
 
     // Apply baseline-cuts
     Bool_t CutTrigger = Selection::TriggerCuts(jets.at(0).Pt(),jets.at(1).Pt(),EtaDP,DeltaEta,mjj,MET);
-    Bool_t Cut0 = Selection::EtaCut(jets.at(0).Eta()) && Selection::EtaCut(jets.at(1).Eta());
-    Bool_t Cut1 = Selection::JetCut(jets.at(0).Pt()) && Selection::JetCut(jets.at(1).Pt());
-    Bool_t Cut2 = Selection::DPEta(EtaDP);
-    Bool_t Cut3 = Selection::DEtaCut(DeltaEta);
-    Bool_t Cut4 = Selection::METcut(MET);
-    Bool_t Cut5 = Selection::MassCut(mjj);
-    Bool_t Cut6 = Selection::CJVCut(jets.at(0).Eta(),jets.at(1).Eta(),jets.at(2).Eta(),jets.at(2).Pt()) || Selection::CJVCut(jets.at(0).Eta(),jets.at(1).Eta(),jets.at(3).Eta(),jets.at(3).Pt());
+    Bool_t Cut0       = Selection::EtaCut(abs(jets.at(0).Eta())) && Selection::EtaCut(abs(jets.at(1).Eta()));
+    Bool_t Cut1       = Selection::JetCut(jets.at(0).Pt()) && Selection::JetCut(jets.at(1).Pt());
+    Bool_t Cut2       = Selection::DPEta(EtaDP);
+    Bool_t Cut3       = Selection::DEtaCut(DeltaEta);
+    Bool_t Cut4       = Selection::METcut(MET);
+    Bool_t Cut5       = Selection::MassCut(mjj);
+    Bool_t Cut6       = Selection::CJVCut(jets.at(0).Eta(),jets.at(1).Eta(),jets.at(2).Eta(),jets.at(2).Pt()) || Selection::CJVCut(jets.at(0).Eta(),jets.at(1).Eta(),jets.at(3).Eta(),jets.at(3).Pt());
     Bool_t Cut7 = Selection::PhiCut(DeltaPhi);
 
     // Count independent no. events passing baseline-cuts
@@ -239,7 +219,7 @@ Int_t ExampleVBFHAnalysis::Analysis()
     if(Cut7){ nDPhi++; }
 
 
-    Float_t weight1 = 1;
+    Float_t weight1 = 0.657;
     // Fill N-1 histograms
     if(Cut0 && Cut1 && Cut2 && Cut3 && Cut4 && !Cut6 && Cut7){ _fMjj->Fill(mjj,weight1); }
     if(Cut0 && Cut1 && Cut2 && Cut4 && Cut5 && !Cut6 && Cut7){ _fDeltaEta->Fill(DeltaEta,weight1); }
@@ -269,35 +249,11 @@ Int_t ExampleVBFHAnalysis::Analysis()
     if(CutTrigger && Cut0 && Cut1 && Cut2 && Cut3 && Cut4 && Cut5){ nYield5++; }
     if(CutTrigger && Cut0 && Cut1 && Cut2 && Cut3 && Cut4 && Cut5 && !Cut6){ nYield6++; }
     if(CutTrigger && Cut0 && Cut1 && Cut2 && Cut3 && Cut4 && Cut5 && !Cut6 && Cut7){ nYield7++; }
-
-    
-    Float_t weight = 1;
-    /*    cout << "nTrigger: " << nTrigger*weight << endl;
-    
-      cout << "nYield1: " << nYield1*weight << "  " << nYield1/nTrigger << "  " << nYield1/nTrigger  << endl;
-      cout << "nYield2: " << nYield2*weight << "  " << nYield2/nTrigger << "  " << nYield2/nYield1 << endl;
-      cout << "nYield3: " << nYield3*weight << "  " << nYield3/nTrigger << "  " << nYield3/nYield2 << endl;
-      cout << "nYield4: " << nYield4*weight << "  " << nYield4/nTrigger << "  " << nYield4/nYield3 << endl;
-      cout << "nYield5: " << nYield5*weight << "  " << nYield5/nTrigger << "  " << nYield5/nYield4 << endl;
-      cout << "nYield6: " << nYield6*weight << "  " << nYield6/nTrigger << "  " << nYield6/nYield5 << endl;
-      cout << "nYield7: " << nYield7*weight << "  " << nYield7/nTrigger << "  " << nYield7/nYield6 << endl;
-      //      cout << "nYield8: " << nYield8*weight << "  " << nYield8/nTrigger << "  " << nYield8/nYield7 << endl;
-      */
-    /*   cout << "nEta: " << nEta << endl;
-	 cout << "nDPhi: " << nDPhi << endl;
-	 cout << "nMET: " << nMET << endl;
-	 cout << "nJetMass: " << nJetMass << endl;
-	 cout << "nDEta: " << nDEta << endl;
-	 cout << "nDPEta: "<< nDPEta << endl;
-	 cout << "nCJV: " << nCJV << endl;
-    */
-
-
     
   }
   
-  Float_t weight = 1;
-  /* cout << "nTrigger: " << nTrigger*weight << endl;
+  //  Float_t weight = 1;
+  /*cout << "nTrigger: " << nTrigger*weight << endl;
   
   cout << "nYield1 = dijet PT: " << nYield1*weight << "  " << nYield1/nTrigger << "  " << nYield1/nTrigger  << endl;
   cout << "nYield2 = Eta(j1).Eta(j2): " << nYield2*weight << "  " << nYield2/nTrigger << "  " << nYield2/nYield1 << endl;
@@ -306,31 +262,31 @@ Int_t ExampleVBFHAnalysis::Analysis()
   cout << "nYield5 = M(j1j2):  " << nYield5*weight << "  " << nYield5/nTrigger << "  " << nYield5/nYield4 << endl;
   cout << "nYield6 = CJV: " << nYield6*weight << "  " << nYield6/nTrigger << "  " << nYield6/nYield5 << endl;
   cout << "nYield7 = DeltaPhi(j1j2): " << nYield7*weight << "  " << nYield7/nTrigger << "  " << nYield7/nYield6 << endl;
-  */ 
+  */
     
       
-      _fScalarHT->Fill(ScalarHT_HT[0]);
+  _fScalarHT->Fill(ScalarHT_HT[0]);
+      
+  Int_t _nGenJets = sizeof(GenJet_PT)/sizeof(GenJet_PT[0]);
   
-      Int_t _nGenJets = sizeof(GenJet_PT)/sizeof(GenJet_PT[0]);
+  for(Int_t j=0; j < _nGenJets; j++){
+    ngenjets.push_back(GenJet_size);
+    genjetpts.push_back(GenJet_PT[j]);
+    _fGenJetPT->Fill(genjetpts.at(j));
+  }
   
-      for(Int_t j=0; j < _nGenJets; j++){
-	ngenjets.push_back(GenJet_size);
-	genjetpts.push_back(GenJet_PT[j]);
-	_fGenJetPT->Fill(genjetpts.at(j));
-      }
+  njets.clear();
+  jetpts.clear();
+  ngenjets.clear();
+  genjetpts.clear();
+  jeteta.clear();
+  jetphi.clear();
+  jetmass.clear();
+  jets.clear();
+  
+  
       
-      njets.clear();
-      jetpts.clear();
-      ngenjets.clear();
-      genjetpts.clear();
-      jeteta.clear();
-      jetphi.clear();
-      jetmass.clear();
-      jets.clear();
-      
-
-      
-      return 0;
+  return 0;
 }
 
 Int_t ExampleVBFHAnalysis::ParticleAnalysis(){
@@ -361,7 +317,7 @@ Int_t ExampleVBFHAnalysis::Output()
 {
 
 
-  TFile *_rootFile = new TFile("VBF_h2_8000_outputNEW.root","RECREATE");
+  TFile *_rootFile = new TFile("VBF_vbf_8000_outputTEST.root","RECREATE");
 
   _fJetPT->Write();
   _fJetMass->Write();
@@ -369,7 +325,6 @@ Int_t ExampleVBFHAnalysis::Output()
   _fDeltaEta->Write();
   _fDeltaPhi->Write();
   _fEtaDP->Write();
-  _fCJPt->Write();
   _fCJEt->Write();
   _fCJEta->Write();
   _fNjets30->Write();
@@ -391,7 +346,7 @@ Int_t ExampleVBFHAnalysis::Output()
   _rootFile->Write();
   _rootFile->Close();
 
-  TFile *_rootFile1 = new TFile("VBF_h2_8000_precut_outputNEW.root","RECREATE");
+  TFile *_rootFile1 = new TFile("VBF_vbf_8000_precut_outputTEST.root","RECREATE");
   fJetPT1_precut->Write();
   fJetPT2_precut->Write();
   fEtaDP_precut->Write();
@@ -400,7 +355,6 @@ Int_t ExampleVBFHAnalysis::Output()
   fJetEta1_precut->Write();
   fJetEta2_precut->Write();
   fInvMass_precut->Write();
-  fCJPt_precut->Write();
   fCJEt_precut->Write();
   fDeltaPhi_precut->Write();
 
