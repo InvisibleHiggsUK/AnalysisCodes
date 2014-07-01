@@ -3,45 +3,60 @@
 
 #include <iostream>
 
-// Here go the offline cuts:
-//    pT(j1),pT(j2) > 50 GeV
-//    |eta| < 4.7
-//    eta(j1).eta(j2) < 0
-//    Delta(eta_jj) > 4.2
-//    Di-jet mass > 1100 GeV
-//    MET > 130 GeV
-//    Delta(phi_jj) < 1 radians
-//    CJV to any event with additional jet pT > 30 GeV
-
+Float_t xsec = 1.578;
+Float_t IntLumiData = 19494;
+Float_t pi = 3.14159265;
 
 class Selection{
 
  public:
   
-  //static float GetEntries() { return 1000; }
+  // Cut declarations 
 
+  // Represents Trigger implementation of AN
   static bool TriggerCuts(float jetpt1_trig, float jetpt2_trig, float eta_trig, float dEtajj_trig, float mjj_trig, float met_trig)
   {
     return (jetpt1_trig > 40 && jetpt2_trig > 40 && eta_trig < 0 && dEtajj_trig > 3.5 && mjj_trig > 800 && met_trig > 65);
   }
 
+  // Offline cuts, dijet pt
   static bool JetCut(float pt){ return pt > 50.; }
   
-  static bool EtaCut(float eta){ return abs(eta) < 4.7; }
+  // Eta cut
+  static bool EtaCut(float eta){ return (eta) < 4.7; }
 
+  // Phi cut
   static bool PhiCut(float phi){ return phi < 1; }
 
+  // MET cut
   static bool METcut(float met){ return met > 130; }
 
+  // Dijet invariant mass cut
   static bool MassCut(float m_jj){ return m_jj > 1100; }
 
+  // Delta Eta cut
   static bool DEtaCut(float dEtajj){ return dEtajj > 4.2; }
 
+  // Eta scalar product cut
   static bool DPEta(float etaDP){ return etaDP < 0; }
 
+  // Central Jet Veto cut
   static bool CJVCut(float eta1, float eta2, float eta3, float pt3){ return ((eta1 < eta3 && eta3 < eta2 && pt3 > 30) || (eta2 < eta3 && eta3 < eta1 && pt3 > 30)); }
 
+  // Central Jet Eta
+  static bool CJEta(float eta_jet_1, float eta_jet_2, float eta_jet_3)
+  {    
+    return( (eta_jet_1 < eta_jet_3 && eta_jet_3 < eta_jet_2) || (eta_jet_2 < eta_jet_3 && eta_jet_3 < eta_jet_1 ) );  
+      }
+  
+  // Central Jet Pt
+  static bool CJPt(float pt_jet_3){ return pt_jet_3 > 30; }
 
+
+
+  // Cut quantities 
+
+  static float Weight(Int_t Evts) { return (IntLumiData)/(Evts/xsec); }
 
   static float NJets() { return 2; } 
   
@@ -59,8 +74,6 @@ class Selection{
   
   static float METCut() { return 150; }
   
-  //  extern  Float_t pi = 3.14159265;
-
 
 };
 
