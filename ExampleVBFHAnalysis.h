@@ -505,7 +505,7 @@ public :
    TH1D* _fCJPt;
    TH1D* _fCJEt;
    TH1D* _fCJEta;
-   TH1D* _fCJVCut;
+   TH1D* _fCJVEt;
    TH1D* _fNjets30;
    TH1D* _fMET;
    TH1D* _fGenJetPT;
@@ -549,9 +549,11 @@ public :
    std::vector<Float_t> particlepts;
    std::vector<TLorentzVector> higgs;
    std::vector<TLorentzVector> jets;
+   std::vector<TLorentzVector> alljets;
 
    TLorentzVector Higgs;
    TLorentzVector Jeti;
+   TLorentzVector Jet;
    TLorentzVector Jet1;
    TLorentzVector Jet2;
    TLorentzVector Jet3;
@@ -567,9 +569,9 @@ public :
 ExampleVBFHAnalysis::ExampleVBFHAnalysis(TTree *tree) : fChain(0) 
 {
   if (tree == 0) {
-    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("event_h2_TEST_8000.root");
+    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("event_vbf_TEST.root");
     if (!f || !f->IsOpen()) {
-      f = new TFile("event_h2_TEST_8000.root");
+      f = new TFile("event_vbf_TEST.root");
     }
     f->GetObject("Delphes",tree);
   }
