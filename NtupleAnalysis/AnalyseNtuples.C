@@ -32,8 +32,8 @@ void AnalyseNtuples(unsigned int id, int nEvts = -1){
   while( evt->loadNext() ) {
 
     std::cout << "NEW ENTRY" << std::endl;
-    std::cout << "Jet PT: " << evt->JET1PT()[0] << std::endl;
-
+    std::cout << "Jet PT: " << evt->JET1PT() << std::endl;
+    //    std::cout << "JetPT: " << jet1Pt << std::endl;
   }
 
 }
