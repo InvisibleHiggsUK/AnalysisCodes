@@ -1,0 +1,12 @@
+echo "The datasets available are:"
+
+echo "     1  : Higgs portal model 220 GeV at 8 TeV, before baseline cuts and unweighted"
+echo "     2  : Higgs portal model 220 GeV at 8 TeV, before baseline cuts and weighted to 19.5 1/fb"
+echo "     3  : Higgs portal model 220 GeV at 8 TeV, after baseline cuts and weighted to 19.5 1/fb"    
+echo "     4  : SM VBF Invisible Higgs 125 GeV at 8 TeV, before baseline cuts and unweighted"
+echo "     5  : SM VBF Invisible Higgs 125 GeV at 8 TeV, before baseline cuts and weighted to 19.5 1/fb"
+echo "     6  : SM VBF Invisible Higgs 125 GeV at 8 TeV, after baseline cuts and weighted to 19.5 1/fb"     
+
+echo "     Run the comparison with: " 
+echo " " 
+echo "     root -l Comparison\(id\)"
