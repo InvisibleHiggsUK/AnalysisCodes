@@ -20,6 +20,8 @@
 #include <vector>
 #include <iterator>
 #include <iostream>
+#include <stdlib.h>
+#include <TMath.h>
 
 class ExRootTreeReader;
 class ExRootResult;
@@ -41,7 +43,7 @@ void NtupleAnalysis::processEvents()
    hJet2Pt  = new TH1D("Jet2Pt","Jet2Pt",  80,   0, 400);
    hJet2Eta = new TH1D("Jet2Eta","Jet2Eta",50, -10,  10);
    hvbfDEta = new TH1D("vbfDEta","vbfDEta",50,   0,  10);
-   hvbfDPhi = new TH1D("vbfDPhi","vbfDPhi",63,   0,   4);
+   hvbfDPhi = new TH1D("vbfDPhi","vbfDPhi",63,   0,   TMath::Pi());
    hvbfM    = new TH1D("vbfM","vbfM",      40,   0, 4000);
    hMET     = new TH1D("MET","MET",        50,   0,  500);
    hcenJetEt= new TH1D("cenJetEt","cenJetEt", 30, 0, 150);
@@ -52,7 +54,7 @@ void NtupleAnalysis::processEvents()
    hgenJet2Pt  = new TH1D("genJet2Pt" , "genJet2Pt", 80,   0,  400);
    hgenJet2Eta = new TH1D("genJet2Eta","genJet2Eta", 50, -10,   10);
    hgenVBFDEta = new TH1D("genVBFDEta","genVBFDEta", 50,   0,   10);
-   hgenVBFDPhi = new TH1D("genVBFDPhi","genVBFDphi", 63,   0,    4);
+   hgenVBFDPhi = new TH1D("genVBFDPhi","genVBFDphi", 63,   0,    TMath::Pi());
    hgenVBFM    = new TH1D("genVBFM"   ,"genVBFM"   , 40,   0, 4000);
    
 
@@ -66,7 +68,10 @@ void NtupleAnalysis::processEvents()
 
       if( printout ) continue;
 
-      cout << "JetPT : " << jet1Pt << endl;
+      //      Float_t weight2 = 0.308;
+      Float_t weight2 = 1;
+      cout << "weight: " << weight2 << endl;
+      cout << "nentries: " << nentries << endl;
       
       // Fill RECO Level objects to histo
       hJet1Pt->Fill(jet1Pt);
@@ -84,7 +89,7 @@ void NtupleAnalysis::processEvents()
       hgenVBFDPhi->Fill(mcVBFDPhi);
       hgenVBFM->Fill(mcVBFM);
       
-      TFile *_rootfile = new TFile("VBF_ntuple_125.root","RECREATE");
+      TFile *_rootfile = new TFile("VBF_ntuple_125_unweighted.root","RECREATE");
       hJet1Pt->Write();
       hJet1Eta->Write();
       hJet2Pt->Write();
