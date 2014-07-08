@@ -535,6 +535,21 @@ public :
    TH1D* fCJEt_precut;
    TH1D* fDeltaPhi_precut;
 
+   // Pre cut and weighted histos
+   
+   TH1D* fJetPT1_precut_wgt;
+   TH1D* fJetPT2_precut_wgt;
+   TH1D* fEtaDP_precut_wgt;
+   TH1D* fDeltaEta_precut_wgt;
+   TH1D* fMET_precut_wgt;
+   TH1D* fJetEta1_precut_wgt;
+   TH1D* fJetEta2_precut_wgt;
+   TH1D* fInvMass_precut_wgt;
+   TH1D* fCJPt_precut_wgt;
+   TH1D* fCJEt_precut_wgt;
+   TH1D* fDeltaPhi_precut_wgt;
+   
+   
 
    std::vector<Int_t> njets;
    std::vector<Float_t> jetpts;
