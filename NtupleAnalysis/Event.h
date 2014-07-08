@@ -23,7 +23,8 @@ class Event{
   Float_t ID() const { return id_; }
   
   Int_t JETSINDEX() const { return jet1index_; }
-  Double_t* JET1PT() const { return jet1pt_; }
+  Double_t jet1Pt;
+  Double_t JET1PT() const { return jet1Pt; }
   Double_t* JET1ETA() const { return jet1eta_; }
   Double_t* JET1PHI() const { return jet1phi_; }
   Double_t* JET1M() const { return jet1m_; }
@@ -40,6 +41,8 @@ class Event{
   Double_t* JET3M() const { return jet3m_; }
   
 
+  //  TBranch *b_events_jet1Pt;
+
 
  private:
   const unsigned int maxColSize_;
@@ -50,7 +53,8 @@ class Event{
   
   Double_t id_;
   Int_t jet1index_;
-  Double_t* jet1pt_;
+  Double_t jet1pt_;
+  //  Double_t jet1Pt;
   Double_t* jet1eta_;
   Double_t* jet1phi_;
   Double_t* jet1m_;
@@ -72,7 +76,9 @@ Event::Event(const TString &fileName, int numProcessed)
 : maxColSize_(50), currentEntry_(-1){
   std::cout << "Setting up event variables\n" << std::flush;
   
-  jet1pt_ = new Double_t[maxColSize_];
+  //  jet1pt_ = new Double_t[maxColSize_];
+  jet1pt_ = new Double_t;
+  jet1Pt = new Double_t;
   jet1eta_ = new Double_t[maxColSize_];
   jet1phi_ = new Double_t[maxColSize_];
   jet1m_ = new Double_t[maxColSize_];
@@ -94,7 +100,8 @@ Event::Event(const TString &fileName, int numProcessed)
   nTotEvts_ = ( numProcessed < 0 ) ? chain_->GetEntries() : std::min(numProcessed,static_cast<int>(chain_->GetEntries()));
   
   chain_->SetBranchAddress("jet1Index",&jet1index_);
-  chain_->SetBranchAddress("jet1Pt",jet1pt_);
+  //  chain_->SetBranchAddress("jet1Pt",&jet1Pt, &b_events_jet1Pt);
+  chain_->SetBranchAddress("jet1Pt",&jet1Pt);
   chain_->SetBranchAddress("jet1Eta",jet1eta_);
   chain_->SetBranchAddress("jet1Phi",jet1phi_);
   chain_->SetBranchAddress("jet1M",jet1m_);
@@ -148,9 +155,6 @@ bool Event::loadNext() {
     }
 
     chain_->GetEntry(currentEntry_);
-
-
-
 
     return true;
   }
