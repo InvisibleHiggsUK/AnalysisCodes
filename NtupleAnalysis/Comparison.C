@@ -1,5 +1,6 @@
 #ifndef COMPARISON_H
 #define COMPARISON_H
+
 // Comparison between DELPHES and Fullsim ntuples before any baseline-cuts are applied
 
 // The histograms in both DELPHES samples are labelled: 
@@ -11,6 +12,7 @@
 // The histograms in the Fullsim ntuples are labelled:
 // vbfM, vbfDEta, vbfDPhi, cenJetEt, MET, Jet1Pt, Jet1Eta, Jet2Pt, Jet2Eta
 // They are taken from 19.5 1/fb of data at 8 TeV
+
 #include <iostream>
 #include <TH1.h>
 #include <TCanvas.h>
@@ -18,6 +20,8 @@
 #include <TPad.h>
 
 #include "Dataset.h"    // Includes the dataset declaration 
+
+//----------- MAIN --------
 
 void Comparison(unsigned int id){
 
@@ -29,7 +33,7 @@ void Comparison(unsigned int id){
 
   gStyle->SetOptStat(0);
   gStyle->SetTitleFontSize(0.03);
-  
+
   TCanvas *c1 = new TCanvas("JetMassComp","InvJetMass Comparison", 600, 600);
   TPad *c1_0 = new TPad("pad1","pad1",0., 0.15, 1., 1.);
   c1_0->SetTopMargin(0.05);
@@ -191,13 +195,13 @@ void Comparison(unsigned int id){
   hInvJMassComp->SetLineColor(kRed);
   hInvJMassComp->GetXaxis()->SetTitle("M_{jj} [GeV]");
   hInvJMassComp->GetYaxis()->SetTitle("Events / 100 GeV");
-  hInvJMassComp->Scale(1/entries1);
+  //  hInvJMassComp->Scale(1/entries1);
   // Get dijet invariant mass from DELPHES ntuple
   TH1F* hInvJMassDELPHES = (TH-1F*)delphes_file->Get("InvMass");
   Double_t entries_1 = hInvJMassDELPHES->GetEntries();
   hInvJMassDELPHES->Draw("SAME hist");
   hInvJMassDELPHES->SetLineColor(kBlue);
-  hInvJMassDELPHES->Scale(1/entries_1);
+  //  hInvJMassDELPHES->Scale(1/entries_1);
   leg->AddEntry(hInvJMassComp, "M_{jj} FullSim, 19.5 fb^{-1} 8 TeV","l");
   leg->AddEntry(hInvJMassDELPHES,"M_{jj} VBFNLO + DELPHES","l");
   leg->SetBorderSize(0);
@@ -227,9 +231,10 @@ void Comparison(unsigned int id){
   TLine *l = new TLine(0,1,4000,1);
   ratio1->Divide(hInvJMassDELPHES);
   ratio1->Draw("E1");
+  ratio1->GetYaxis()->SetTitle("Ratio");
   l->SetLineColor(kBlue);
   l->Draw("SAME");
-  // Fit chi-squared to ration
+  // Fit chi-squared to ratio
   //  TF1 *fit = new TF1("fit","pol0",ratio1->GetXaxis()->GetBinLowEdge(1),ratio1->GetXaxis()->GetBinUpEdge(ratio1->GetNbinsX()));
   //  gStyle->SetOptFit(1);
   //  ratio1->Fit(fit);
@@ -245,14 +250,14 @@ void Comparison(unsigned int id){
   Double_t entries_2 = hDeltaEtaDELPHES->GetEntries();
   hDeltaEtaDELPHES->Draw("hist");
   hDeltaEtaDELPHES->SetLineColor(kBlue);
-  hDeltaEtaDELPHES->Scale(1/entries_2);
+  //  hDeltaEtaDELPHES->Scale(1/entries_2);
   TH1* hDeltaEta = (TH1F*)ntuple_file->Get("vbfDEta");
   Double_t entries2 = hDeltaEta->GetEntries();
   hDeltaEta->Draw("SAME hist");
   hDeltaEta->SetLineColor(kRed);
   hDeltaEta->GetXaxis()->SetTitle("#Delta#eta_{jj}");
   hDeltaEta->GetYaxis()->SetTitle("Events / 0.2");
-  hDeltaEta->Scale(1/entries2);
+  //  hDeltaEta->Scale(1/entries2);
   leg2->AddEntry(hDeltaEta,"#Delta#eta_{jj} CMS FullSim, 19.5 fb^{-1} 8 TeV","l");
   leg2->AddEntry(hDeltaEtaDELPHES,"#Delta#eta_{jj} VBFNLO + DELPHES","l");
   leg2->SetFillStyle(0);
@@ -265,7 +270,7 @@ void Comparison(unsigned int id){
   if(id ==6){ leg2->AddEntry((TObject*)0, "m_{H} = 125 GeV, cut and weighted to 19.5 fb^{-1}",""); }
   leg2->Draw();
   c2_0->Draw();
-  // Fill Pad
+  // Fill Pad 
   c2_1->cd();
   c2_1->SetTopMargin(0.05);
   c2_1->SetBottomMargin(0.26);
@@ -278,6 +283,7 @@ void Comparison(unsigned int id){
   ratio2->Divide(hDeltaEtaDELPHES);
   ratio2->Draw("E1");
   ratio2->GetYaxis()->SetRangeUser(0,9);
+  ratio2->GetYaxis()->SetTitle("Ratio");
   l2->SetLineColor(kBlue);
   l2->Draw("SAME");
   // Save histo to pdf
@@ -291,14 +297,14 @@ void Comparison(unsigned int id){
   Double_t entries3 = hDeltaPhi->GetEntries();
   hDeltaPhi->Draw("hist");
   hDeltaPhi->SetLineColor(kRed);
-  hDeltaPhi->Scale(1/entries3);
+  //  hDeltaPhi->Scale(1/entries3);
   hDeltaPhi->GetXaxis()->SetTitle("#Delta#phi_{jj}");
   hDeltaPhi->GetYaxis()->SetTitle("Events / #pi/50");
   TH1* hDeltaPhiDELPHES = (TH1F*)delphes_file->Get("DeltaPhiJJ");
   Double_t entries_3 = hDeltaPhiDELPHES->GetEntries();
   hDeltaPhiDELPHES->Draw("SAME hist");
   hDeltaPhiDELPHES->SetLineColor(kBlue);
-  hDeltaPhiDELPHES->Scale(1/entries_3);
+  //  hDeltaPhiDELPHES->Scale(1/entries_3);
   leg3->AddEntry(hDeltaPhi,"#Delta#phi_{jj} CMS FullSim, 19.5 fb^{-1} 8 TeV","l");
   leg3->AddEntry(hDeltaPhiDELPHES,"#Delta#phi_{jj} VBFNLO + DELPHES","l");
   leg3->SetFillStyle(0);
@@ -323,6 +329,8 @@ void Comparison(unsigned int id){
   TLine *l3 = new TLine(0,1,4,1);
   ratio3->Divide(hDeltaPhiDELPHES);
   ratio3->Draw("E1");
+  ratio3->GetYaxis()->SetRangeUser(0,2);
+  ratio3->GetYaxis()->SetTitle("Ratio");
   l3->SetLineColor(kBlue);
   l3->Draw("SAME");
   // Save histo to pdf
@@ -335,14 +343,14 @@ void Comparison(unsigned int id){
   Double_t entries4 = hCenJetET->GetEntries();
   hCenJetET->Draw("hist");
   hCenJetET->SetLineColor(kRed);
-  hCenJetET->Scale(1/entries4);
+  //  hCenJetET->Scale(1/entries4);
   hCenJetET->GetXaxis()->SetTitle("Central Jet E_{T} [GeV]");
   hCenJetET->GetYaxis()->SetTitle("Events / 5 GeV");
   TH1* hCenJetETDELPHES = (TH1F*)delphes_file->Get("CJEt");
   Double_t entries_4 = hCenJetETDELPHES->GetEntries();
   hCenJetETDELPHES->Draw("SAME hist");
   hCenJetETDELPHES->SetLineColor(kBlue);
-  hCenJetETDELPHES->Scale(1/entries_4);
+  //  hCenJetETDELPHES->Scale(1/entries_4);
   leg4->AddEntry(hCenJetET,"Central jet E_{T} FullSim 19.5 fb^{-1} 8 TeV","l");
   leg4->AddEntry(hCenJetETDELPHES,"Central jet E_{T} VBFNLO + DELPHES","l");
   leg4->SetFillStyle(0);
@@ -367,7 +375,8 @@ void Comparison(unsigned int id){
   TLine *l4 = new TLine(0,1,150,1);
   ratio4->Divide(hCenJetETDELPHES);
   ratio4->Draw("E1");
-  ratio4->GetYaxis()->SetRangeUser(0,10);
+  ratio4->GetYaxis()->SetRangeUser(-2,4);
+  ratio4->GetYaxis()->SetTitle("Ratio");
   l4->SetLineColor(kBlue);
   l4->Draw("SAME");
   c4->SaveAs(Dataset::pdfTitler(id)+".pdf(");
@@ -379,14 +388,14 @@ void Comparison(unsigned int id){
   Double_t entries5 = hMET->GetEntries();
   hMET->Draw("hist");
   hMET->SetLineColor(kRed);
-  hMET->Scale(1/entries5);
+  //  hMET->Scale(1/entries5);
   hMET->GetXaxis()->SetTitle("E_{T}^{miss} [GeV]");
   hMET->GetYaxis()->SetTitle("Events / 10 GeV");
   TH1 *hMETDELPHES = (TH1F*)delphes_file->Get("MET");
   Double_t entries_5 = hMETDELPHES->GetEntries();
   hMETDELPHES->Draw("SAME hist");
   hMETDELPHES->SetLineColor(kBlue);
-  hMETDELPHES->Scale(1/entries_5);
+  //  hMETDELPHES->Scale(1/entries_5);
   leg5->AddEntry(hMET,"E_{T}^{miss} CMS FullSim 19.5 fb^{-1} 8 TeV", "l");
   leg5->AddEntry(hMETDELPHES,"E_{T}^{miss} VBFNLO + DELPHES","l");
   leg5->SetFillStyle(0);
@@ -411,6 +420,7 @@ void Comparison(unsigned int id){
   TLine *l5 = new TLine(0,1,500,1);
   ratio5->Divide(hMETDELPHES);
   ratio5->Draw("E1");
+  ratio5->GetYaxis()->SetTitle("Ratio");
   l5->SetLineColor(kBlue);
   l5->Draw("SAME");
   // Save histo to pdf
@@ -423,14 +433,14 @@ void Comparison(unsigned int id){
   Double_t entries6 = hJet1PT->GetEntries();
   hJet1PT->Draw("hist");
   hJet1PT->SetLineColor(kRed);
-  hJet1PT->Scale(1/entries6);
+  //  hJet1PT->Scale(1/entries6);
   hJet1PT->GetXaxis()->SetTitle("Leading jet p_{T} [GeV]");
   hJet1PT->GetYaxis()->SetTitle("Events / 5 GeV");
   TH1* hJet1PTDELPHES = (TH1F*)delphes_file->Get("Jet1PT");
   Double_t entries_6 = hJet1PTDELPHES->GetEntries();
   hJet1PTDELPHES->Draw("SAME hist");
   hJet1PTDELPHES->SetLineColor(kBlue);
-  hJet1PTDELPHES->Scale(1/entries_6);
+  //  hJet1PTDELPHES->Scale(1/entries_6);
   leg6->AddEntry(hJet1PT,"Leading jet p_{T} CMS FullSim 19.5 fb^{-1} 8 TeV", "l");
   leg6->AddEntry(hJet1PTDELPHES,"Leading jet p_{T} VBFNLO + DELPHES","l");
   leg6->SetFillStyle(0);
@@ -455,7 +465,8 @@ void Comparison(unsigned int id){
   TLine *l6 = new TLine(0,1,400,1);
   ratio6->Divide(hJet1PTDELPHES);
   ratio6->Draw("E1");
-  ratio6->GetYaxis()->SetRangeUser(0,10);
+  ratio6->GetYaxis()->SetRangeUser(-2,10);
+  ratio6->GetYaxis()->SetTitle("Ratio");
   l6->SetLineColor(kBlue);
   l6->Draw("SAME");
   // Save histo to pdf
@@ -468,14 +479,14 @@ void Comparison(unsigned int id){
   Double_t entries7 = hJet2PT->GetEntries();
   hJet2PT->Draw("hist");
   hJet2PT->SetLineColor(kRed);
-  hJet2PT->Scale(1/entries7);
+  //  hJet2PT->Scale(1/entries7);
   hJet2PT->GetXaxis()->SetTitle("Sub-leading jet p_{T} [GeV]");
   hJet2PT->GetYaxis()->SetTitle("Events / 5 GeV");
   TH1* hJet2PTDELPHES = (TH1F*)delphes_file->Get("Jet2PT");
   Double_t entries_7 = hJet2PTDELPHES->GetEntries();
   hJet2PTDELPHES->Draw("SAME hist");
   hJet2PTDELPHES->SetLineColor(kBlue);
-  hJet2PTDELPHES->Scale(1/entries_7);
+  //  hJet2PTDELPHES->Scale(1/entries_7);
   leg7->AddEntry(hJet2PT,"Sub-leading jet p_{T} CMS FullSim 19.5 fb^{-1} 8 TeV", "l");
   leg7->AddEntry(hJet2PTDELPHES,"Sub-leading jet p_{T} VBFNLO + DELPHES","l");
   leg7->SetFillStyle(0);
@@ -500,6 +511,8 @@ void Comparison(unsigned int id){
   TLine *l7 = new TLine(0,1,400,1);
   ratio7->Divide(hJet2PTDELPHES);
   ratio7->Draw("E1");
+  ratio7->GetYaxis()->SetRangeUser(-2,10);
+  ratio7->GetYaxis()->SetTitle("Ratio");
   l7->SetLineColor(kBlue);
   l7->Draw("SAME");
   // Save histo to pdf
@@ -508,21 +521,16 @@ void Comparison(unsigned int id){
   // Canvas 8
   c8->cd();
   c8_0->cd();
+  TH1* hJetEta1 = (TH1F*)delphes_file->Get("JetEta1");
+  hJetEta1->Draw("hist");
+  hJetEta1->SetLineColor(kBlue);
+  hJetEta1->GetXaxis()->SetTitle("Jet 1 #eta"); 
+  hJetEta1->GetYaxis()->SetTitle("Entries");
   TH1* hJet1Eta = (TH1F*)ntuple_file->Get("Jet1Eta");
-  Double_t entries8 = hJet1Eta->GetEntries();
-  hJet1Eta->Draw("hist");
+  hJet1Eta->Draw("SAME hist");
   hJet1Eta->SetLineColor(kRed);
-  hJet1Eta->Scale(1/entries8);
-  hJet1Eta->GetXaxis()->SetTitle("Jet #eta");
-  hJet1Eta->GetYaxis()->SetTitle("Events");
-  hJet1Eta->GetYaxis()->SetRangeUser(0,0.1);
-  TH1* hJet1EtaDELPHES = (TH1F*)delphes_file->Get("JetEta1");
-  Double_t entries_8 = hJet1EtaDELPHES->GetEntries();
-  hJet1EtaDELPHES->Draw("SAME hist");
-  hJet1EtaDELPHES->SetLineColor(kBlue);
-  hJet1EtaDELPHES->Scale(1/entries_8);
+  leg8->AddEntry(hJetEta1,"Jet #eta VBFNLO + DELPHES","l");
   leg8->AddEntry(hJet1Eta,"Jet #eta CMS FullSim 19.5 fb^{-1} 8 TeV", "l");
-  leg8->AddEntry(hJet1EtaDELPHES,"Jet #eta VBFNLO + DELPHES","l");
   leg8->SetFillStyle(0);
   leg8->SetBorderSize(0);
   if(id ==1){ leg8->AddEntry((TObject*)0, "m_{h2} = 220 GeV, precut & unweighted",""); }
@@ -541,35 +549,34 @@ void Comparison(unsigned int id){
   c8_1->SetGridx(1);
   c8_1->SetGridy(1);
   c8_1->Draw();
-  TH1 *ratio8 = hJet1Eta->Clone();
+  TH1 *ratio8 = hJetEta1->Clone();
   TLine *l8 = new TLine(-10,1,10,1);
-  ratio8->Divide(hJet1EtaDELPHES);
+  ratio8->Divide(hJet1Eta);
   ratio8->Draw("E1");
-  ratio8->GetYaxis()->SetRangeUser(0,5);
+  ratio8->GetYaxis()->SetRangeUser(0,3);
+  ratio8->SetLineColor(kRed);
+  ratio8->GetYaxis()->SetTitle("Ratio");
   l8->SetLineColor(kBlue);
   l8->Draw("SAME");
-  // Save histo to pdf
+  //  Save histo to pdf
   c8->SaveAs(Dataset::pdfTitler(id)+".pdf(");
 
 
   // Canvas 9
   c9->cd();
   c9_0->cd();
+  TH1* hJetEta2 = (TH1F*)delphes_file->Get("JetEta2");
+  hJetEta2->Draw("hist");
+  hJetEta2->SetLineColor(kBlue);
+  hJetEta2->GetXaxis()->SetTitle("Jet 2 #eta");
+  hJetEta2->GetYaxis()->SetTitle("Entries");
   TH1* hJet2Eta = (TH1F*)ntuple_file->Get("Jet2Eta");
-  Double_t entries9 = hJet2Eta->GetEntries();
-  hJet2Eta->Draw("hist");
+  Double_t entries_9 = hJet2Eta->GetEntries();
+  hJet2Eta->Draw("SAME hist");
   hJet2Eta->SetLineColor(kRed);
-  hJet2Eta->Scale(1/entries9);
-  hJet2Eta->GetXaxis()->SetTitle("Jet 2 #eta");
-  hJet2Eta->GetYaxis()->SetTitle("Events");
-  hJet2Eta->GetYaxis()->SetRangeUser(0,0.1);
-  TH1* hJet2EtaDELPHES = (TH1F*)delphes_file->Get("JetEta2");
-  Double_t entries_9 = hJet2EtaDELPHES->GetEntries();
-  hJet2EtaDELPHES->Draw("SAME hist");
-  hJet2EtaDELPHES->SetLineColor(kBlue);
-  hJet2EtaDELPHES->Scale(1/entries_9);
-  leg9->AddEntry(hJet1Eta,"Second Jet #eta CMS FullSim 19.5 fb^{-1} 8 TeV", "l");
-  leg9->AddEntry(hJet1EtaDELPHES,"Second Jet #eta VBFNLO + DELPHES","l");
+  //  hJet2EtaDELPHES->Scale(1/entries_9);
+  leg9->AddEntry(hJet2Eta,"Second Jet #eta CMS FullSim 19.5 fb^{-1} 8 TeV", "l");
+  leg9->AddEntry(hJetEta2,"Second Jet #eta VBFNLO + DELPHES","l");
   leg9->SetFillStyle(0);
   leg9->SetBorderSize(0);
   if(id ==1){ leg9->AddEntry((TObject*)0, "m_{h2} = 220 GeV, precut & unweighted",""); }
@@ -588,11 +595,13 @@ void Comparison(unsigned int id){
   c9_1->SetGridx(1);
   c9_1->SetGridy(1);
   c9_1->Draw();
-  TH1 *ratio9 = hJet2Eta->Clone();
+  TH1 *ratio9 = hJetEta2->Clone();
   TLine *l9 = new TLine(-10,1,10,1);
-  ratio9->Divide(hJet2EtaDELPHES);
+  ratio9->Divide(hJet2Eta);
   ratio9->Draw("E1");
-  ratio9->GetYaxis()->SetRangeUser(0,5);
+  ratio9->SetLineColor(kRed);
+  ratio9->GetYaxis()->SetRangeUser(0,2.5);
+  ratio9->GetYaxis()->SetTitle("Ratio");
   l9->SetLineColor(kBlue);
   l9->Draw("SAME");
   // Save histo to pdf
