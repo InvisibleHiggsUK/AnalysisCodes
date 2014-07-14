@@ -53,6 +53,51 @@ void PartonAnalysis::processEvents()
       
       Int_t nParticles = sizeof(Particle_PID)/sizeof(Particle_PID[0]);
       Int_t nQ1 = 0 , nQ2 = 0;
+      Int_t i = 0;
+      
+      while ( i < nParticles) {
+	
+       	particles.push_back(Particle_PID[i]);
+	particlepts.push_back(Particle_PT[i]);
+	particlestatus.push_back(Particle_Status[i]);
+	particlepx.push_back(Particle_Px[i]);
+	particlepy.push_back(Particle_Py[i]);
+	particlepz.push_back(Particle_Pz[i]);
+	particlee.push_back(Particle_E[i]);
+	
+	Int_t pdgCode = TMath::Abs(particles.at(i));
+	Int_t Status = particlestatus.at(i);
+	
+	cout << pdgCode << endl;
+	cout << Status << endl;
+	
+	if( (Partons::findPartons(pdgCode, Status)) ) {
+	    cout << "Found 1st quark: " << endl;
+	    cout << "pdgCode: " << pdgCode << endl;
+	    cout << "Status : " << Status << endl;
+	    ++nQ1;
+	}
+	if( (Partons::findPartons(pdgCode, Status)) && nQ1 == 1) {
+	  cout << "Found 2nd quark: " << endl;
+	  cout << "pdgcode : " << pdgCode << endl;
+	  cout << "Status: " << Status << endl;
+	}
 
-     }
+	++i;
+
+      } // end of while loop
+
+      particles.clear();
+      particlepts.clear();
+      particlestatus.clear();
+      particlepx.clear();
+      particlepy.clear();
+      particlepz.clear();
+      particlee.clear();
+
+
+   }
+
+
+   
 }
