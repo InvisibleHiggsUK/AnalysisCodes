@@ -52,7 +52,6 @@ void PartonAnalysis::processEvents()
       cout << "***** NEW ENTRY[" << jentry << "]" << endl;
       
       Int_t nParticles = sizeof(Particle_PID)/sizeof(Particle_PID[0]);
-      Int_t nQ1 = 0 , nQ2 = 0;
 
       for(Int_t i=0; i<nParticles; ++i){
 	particles.push_back(Particle_PID[i]);
@@ -84,30 +83,42 @@ void PartonAnalysis::processEvents()
 	// To split the two quarks, we use a boolean function that returns true if one quark from above is
 	// discovered. The loop runs over all pdgCodes per event.
 
-	if( Partons::findPartons(pdgCode, Status ) && nQ1 ==0)
+	if( Partons::findPartons(pdgCode, Status ) )
 	  {
-	    cout << "FOUND 1st QUARK "<< endl;
-	    Q1.SetPxPyPzE(particlepx.at(i),particlepy.at(i),particlepz.at(i),particlee.at(i));
-	    ++nQ1;
-	    cout << "1st Quark PT : " << Q1.Pt() << endl;
-	    cout << "particlepy: " << Particle_Py[i] << endl;
-	    ++i;
+	    cout << "Found an outgoing parton level quark" << flush;
+	    Qs.SetPxPyPzE(particlepx.at(i),particlepy.at(i),particlepz.at(i),particlee.at(i));
+	    quarks.push_back(Qs); // Storing the outgoing parton level quarks to vector 'quarks'
+	    cout << "\nQuark PT : " << Qs.Pt() << "\n" << flush;
 	  }
-       if( Partons::findPartons(pdgCode, Status) && nQ1 == 1 && nQ2 == 0) 
-	 {
-	   cout << "FOUND 2nd QUARK " << endl;
-	   Q2.SetPxPyPzE(particlepx.at(i),particlepy.at(i),particlepz.at(i),particlee.at(i));
-	   ++nQ1;
-	   cout << "2nd Quark PT : " << Q2.Pt() << endl;
-	   cout << "particlepy; " << Particle_Py[i] << endl;
-	 }
-
-	 
-
-      }
 	
+      }  // end of particle loop
+      
+      // Begin parton-level object definitions
 
-
+      Float_t pi = TMath::Pi();
+      Float_t genQ1PT = quarks.at(0).Pt();       // Gen-level parton-level quark PT
+      Float_t genQ1Eta = quarks.at(0).Eta();
+      Float_t genQ2PT = quarks.at(1).Pt();
+      Float_t genQ2Eta = quarks.at(1).Eta();
+      Float_t genVBFDEta = abs(quarks.at(0).Eta() - quarks.at(1).Eta());  // Delta Eta between parton-level quarks
+      Float_t genVBFDPhi = abs(abs(abs(quarks.at(0).Phi() - quarks.at(1).Phi()) - pi) - pi);
+      Float_t genVBFM = (quarks.at(0) + quarks.at(1)).M(); // Invariant mass between parton-level quarks
+   
+      fQ1PT->Fill(   genQ1PT);
+      fQ1Eta->Fill(  genQ1Eta);
+      fQ2PT->Fill(   genQ2PT);
+      fQ2Eta->Fill(  genQ2Eta);
+      fGenDEta->Fill(genVBFDEta);
+      fGenDPhi->Fill(genVBFDPhi);
+      fGenM->Fill(   genVBFM);
+       
+      this->Output(fQ1PT);
+      this->Output(fQ1Eta);
+      this->Output(fQ2PT);
+      this->Output(fQ2Eta);
+      this->Output(fGenDEta);
+      this->Output(fGenDPhi);
+      this->Output(fGenM);    
 
       particles.clear();
       particlepts.clear();
@@ -116,9 +127,21 @@ void PartonAnalysis::processEvents()
       particlepy.clear();
       particlepz.clear();
       particlee.clear();
-
-
-
-    
+      quarks.clear();
+      
    }
 }
+
+Int_t PartonAnalysis::Output(TH1D *histo)
+{
+  TFile *rootfile = new TFile("VBF_inv_8TeV_partonlevel_objects.root","RECREATE");
+  histo->Write();
+  rootfile->Write();
+  rootfile->Close();
+
+  return 0;
+
+}
+
+
+

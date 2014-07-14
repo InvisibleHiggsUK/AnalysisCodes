@@ -449,6 +449,7 @@ public :
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
            void     processEvents();
+	   Int_t    Output(TH1D *histo);
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
    
@@ -465,8 +466,7 @@ public :
 
    // Declare TLorentzVectors
 
-   TLorentzVector Q1;
-   TLorentzVector Q2;
+   TLorentzVector Qs;
 
    // Declare vectors
  
@@ -477,7 +477,8 @@ public :
    std::vector<Float_t> particlepy;
    std::vector<Float_t> particlepz;
    std::vector<Float_t> particlee;
-   
+
+   std::vector<TLorentzVector> quarks;
 
 };
 
