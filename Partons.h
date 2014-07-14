@@ -21,6 +21,7 @@ class Partons{
 
   static bool findPartons(int p, int s){
     checkStatus(s);
+    checkPartons(p);
     if( (s == 1) && (p == 1 || p == 2 || p == 3 || p == 4 || p == 5 || p == 6 || p == 21))
       {
 	return true;
@@ -51,6 +52,7 @@ class Partons{
   float gluon;   // 21
 
   static void checkStatus(int s);
+  static void checkPartons(int p);
 
 };
 
@@ -63,5 +65,12 @@ void Partons::checkStatus(int s){
     std::cerr << "\nERROR invalid status" << s << std::endl;
       }
 }
+
+void Partons::checkPartons(int p){
+  if(p != 1 && p != 2 && p != 3 && p != 4 && p != 5 && p != 6 && p != 21){
+    std::cerr << "\nERROR invalid pdgCode" << p << std::endl;
+  }
+}
+
 
 #endif
