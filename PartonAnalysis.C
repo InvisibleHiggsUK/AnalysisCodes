@@ -12,7 +12,7 @@
 #include <iostream>
 #include <string>
 
-#include "Partons.h"
+#include "include/Partons.h"
 
 using namespace std;
 
@@ -64,19 +64,20 @@ void PartonAnalysis::processEvents()
 
 	Int_t pdgCode = TMath::Abs(particles.at(i));
 	Int_t Status = particlestatus.at(i);
+	Int_t nqs = 0;
 
 	// Want to separate the two quarks from the VBF, and plot Pt and Eta.
 	// If possible assign them TLorentzVectors
 
 	// Function quarks, which takes pdgCodes as parameters and returns which parton it is
 	
-	if(      (Partons::quarks(pdgCode)) == 1){ cout << "Found an up" << endl; }
-	else if( (Partons::quarks(pdgCode)) == 2){ cout << "Found a down" << endl; }
-	else if( (Partons::quarks(pdgCode)) == 3){ cout << "Found a strange" << endl; }
-	else if( (Partons::quarks(pdgCode)) == 4){ cout << "Found a charm" << endl; }
-	else if( (Partons::quarks(pdgCode)) == 5){ cout << "Found a bottom" << endl; }
-	else if( (Partons::quarks(pdgCode)) == 6){ cout << "Found a top" << endl; }
-	else if( (Partons::quarks(pdgCode)) == 21){ cout << "Found a gluon" << endl; }
+	if(      (Partons::quarks(pdgCode)) == 1){ nqs++; }
+	else if( (Partons::quarks(pdgCode)) == 2){ nqs++; }
+	else if( (Partons::quarks(pdgCode)) == 3){ nqs++; }
+	else if( (Partons::quarks(pdgCode)) == 4){ nqs++; }
+	else if( (Partons::quarks(pdgCode)) == 5){ nqs++; }
+	else if( (Partons::quarks(pdgCode)) == 6){ nqs++; }
+	else if( (Partons::quarks(pdgCode)) == 21){ nqs++; }
 
 	// Check the Pt of incoming partons, and the Pt of outgoing partons, denoted by status -1/1
 
@@ -85,10 +86,9 @@ void PartonAnalysis::processEvents()
 
 	if( Partons::findPartons(pdgCode, Status ) )
 	  {
-	    cout << "Found an outgoing parton level quark" << flush;
+	    //	    cout << "Found an outgoing parton level quark" << flush;
 	    Qs.SetPxPyPzE(particlepx.at(i),particlepy.at(i),particlepz.at(i),particlee.at(i));
 	    quarks.push_back(Qs); // Storing the outgoing parton level quarks to vector 'quarks'
-	    cout << "\nQuark PT : " << Qs.Pt() << "\n" << flush;
 	  }
 	
       }  // end of particle loop
@@ -112,14 +112,6 @@ void PartonAnalysis::processEvents()
       fGenDPhi->Fill(genVBFDPhi);
       fGenM->Fill(   genVBFM);
        
-      this->Output(fQ1PT);
-      this->Output(fQ1Eta);
-      this->Output(fQ2PT);
-      this->Output(fQ2Eta);
-      this->Output(fGenDEta);
-      this->Output(fGenDPhi);
-      this->Output(fGenM);    
-
       particles.clear();
       particlepts.clear();
       particlestatus.clear();
@@ -130,17 +122,23 @@ void PartonAnalysis::processEvents()
       quarks.clear();
       
    }
+   this->Output();
 }
 
-Int_t PartonAnalysis::Output(TH1D *histo)
+Int_t PartonAnalysis::Output()
 {
   TFile *rootfile = new TFile("VBF_inv_8TeV_partonlevel_objects.root","RECREATE");
-  histo->Write();
+  fQ1PT->Write();
+  fQ1Eta->Write();
+  fQ2PT->Write();
+  fQ2Eta->Write();
+  fGenDEta->Write();
+  fGenDPhi->Write();
+  fGenM->Write();
   rootfile->Write();
   rootfile->Close();
 
   return 0;
-
 }
 
 

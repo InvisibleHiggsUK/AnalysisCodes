@@ -7,8 +7,8 @@
 #include "TString.h"
 #include "TVector2.h"
 
-#include "Event.h"
-#include "Sample.h"
+#include "include/Event.h"
+#include "include/Sample.h"
 
 void AnalyseNtuples(unsigned int id, int nEvts = -1){
   
