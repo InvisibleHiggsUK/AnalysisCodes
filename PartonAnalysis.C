@@ -83,7 +83,7 @@ void PartonAnalysis::processEvents()
 
 	// To split the two quarks, we use a boolean function that returns true if one quark from above is
 	// discovered. The loop runs over all pdgCodes per event.
-
+  
 	if( Partons::findPartons(pdgCode, Status ) && nQ1 ==0)
 	  {
 	    cout << "FOUND 1st QUARK "<< endl;
