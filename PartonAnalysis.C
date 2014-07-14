@@ -64,7 +64,7 @@ void PartonAnalysis::processEvents()
 	particlee.push_back(Particle_E[i]);
 
 	Int_t pdgCode = TMath::Abs(particles.at(i));
-	Float_t Status = particlestatus.at(i);
+	Int_t Status = particlestatus.at(i);
 
 	// Want to separate the two quarks from the VBF, and plot Pt and Eta.
 	// If possible assign them TLorentzVectors
@@ -84,19 +84,28 @@ void PartonAnalysis::processEvents()
 	// To split the two quarks, we use a boolean function that returns true if one quark from above is
 	// discovered. The loop runs over all pdgCodes per event.
 
-       cout << "status:  " << Status << endl;
-	cout << Partons::dquarks() << endl;
-
-	//	if(pdgCode == 1 || 2 || 3 || 4 || 5 || 6 || 21 && Status == -1)
-	if( Partons::findPartons(pdgCode, Status)  )
+	if( Partons::findPartons(pdgCode, Status ) && nQ1 ==0)
 	  {
-	    cout <<" Found " << endl;
-	    
+	    cout << "FOUND 1st QUARK "<< endl;
 	    Q1.SetPxPyPzE(particlepx.at(i),particlepy.at(i),particlepz.at(i),particlee.at(i));
-	    
+	    ++nQ1;
+	    cout << "1st Quark PT : " << Q1.Pt() << endl;
+	    cout << "particlepy: " << Particle_Py[i] << endl;
+	    ++i;
 	  }
-	  
+       if( Partons::findPartons(pdgCode, Status) && nQ1 == 1 && nQ2 == 0) 
+	 {
+	   cout << "FOUND 2nd QUARK " << endl;
+	   Q2.SetPxPyPzE(particlepx.at(i),particlepy.at(i),particlepz.at(i),particlee.at(i));
+	   ++nQ1;
+	   cout << "2nd Quark PT : " << Q2.Pt() << endl;
+	   cout << "particlepy; " << Particle_Py[i] << endl;
+	 }
+
+	 
+
       }
+	
 
 
 

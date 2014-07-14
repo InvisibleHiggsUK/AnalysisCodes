@@ -16,15 +16,18 @@ class Partons{
     else if(i == 5){ return 5; }
     else if(i == 6){ return 6; }
     else if(i == 21){ return 21; }
+    else{ return false; }
   }
 
-  static bool findPartons(int p, float s){
-    //    checkStatus(float s);
-    if( (s == -1) && (p == 1 || p == 2 || p == 3 || p == 4 || p == 5 || p == 6 || p == 21))
+  static bool findPartons(int p, int s){
+    checkStatus(s);
+    if( (s == 1) && (p == 1 || p == 2 || p == 3 || p == 4 || p == 5 || p == 6 || p == 21))
       {
 	return true;
       }
+    else { return false; }
   }
+      
 
   //  float dquarks() const { return dquark; }
   static float dquarks();
@@ -34,6 +37,7 @@ class Partons{
   float bquarks() const { return bquark; }
   float tquarks() const { return tquark; }
   float gluons()  const { return gluon; }
+
 
 
  private:
@@ -46,7 +50,7 @@ class Partons{
   float tquark;  // 6
   float gluon;   // 21
 
-  //  static void checkStatus(unsigned int s);
+  static void checkStatus(int s);
 
 };
 
@@ -54,5 +58,10 @@ float Partons::dquarks(){
   return 1;
 }
 
+void Partons::checkStatus(int s){
+  if(s != -1 && s != 1){
+    std::cerr << "\nERROR invalid status" << s << std::endl;
+      }
+}
 
 #endif
