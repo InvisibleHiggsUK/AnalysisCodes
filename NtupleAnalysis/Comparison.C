@@ -297,6 +297,8 @@ void Comparison(unsigned int id){
   Double_t entries3 = hDeltaPhi->GetEntries();
   hDeltaPhi->Draw("hist");
   hDeltaPhi->SetLineColor(kRed);
+  cout << "Ntuple DeltaPhi Integral : " << hDeltaPhi->Integral(0,1000) << endl;
+  cout << " --> entries :  " << entries3  << endl;
   //  hDeltaPhi->Scale(1/entries3);
   hDeltaPhi->GetXaxis()->SetTitle("#Delta#phi_{jj}");
   hDeltaPhi->GetYaxis()->SetTitle("Events / #pi/50");
@@ -304,6 +306,8 @@ void Comparison(unsigned int id){
   Double_t entries_3 = hDeltaPhiDELPHES->GetEntries();
   hDeltaPhiDELPHES->Draw("SAME hist");
   hDeltaPhiDELPHES->SetLineColor(kBlue);
+  cout << "VBFNLO Ntuple Integral : " << hDeltaPhiDELPHES->Integral(0,1000) << endl;
+  cout << " --> entries : " << entries_3 << endl;
   //  hDeltaPhiDELPHES->Scale(1/entries_3);
   leg3->AddEntry(hDeltaPhi,"#Delta#phi_{jj} CMS FullSim, 19.5 fb^{-1} 8 TeV","l");
   leg3->AddEntry(hDeltaPhiDELPHES,"#Delta#phi_{jj} VBFNLO + DELPHES","l");
@@ -346,6 +350,7 @@ void Comparison(unsigned int id){
   //  hCenJetET->Scale(1/entries4);
   hCenJetET->GetXaxis()->SetTitle("Central Jet E_{T} [GeV]");
   hCenJetET->GetYaxis()->SetTitle("Events / 5 GeV");
+  cout << "Ntuple cenJetEt integral : " << hCenJetET->Integral(0,10000) << endl;
   TH1* hCenJetETDELPHES = (TH1F*)delphes_file->Get("CJEt");
   Double_t entries_4 = hCenJetETDELPHES->GetEntries();
   hCenJetETDELPHES->Draw("SAME hist");

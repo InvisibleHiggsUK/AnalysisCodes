@@ -584,9 +584,9 @@ public :
 ExampleVBFHAnalysis::ExampleVBFHAnalysis(TTree *tree) : fChain(0) 
 {
   if (tree == 0) {
-    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("event_vbf_TEST.root");
+    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("event_vbf_inv_8TeV_parton_level_output.root");
     if (!f || !f->IsOpen()) {
-      f = new TFile("event_vbf_TEST.root");
+      f = new TFile("event_vbf_inv_8TeV_parton_level_output.root");
     }
     f->GetObject("Delphes",tree);
   }

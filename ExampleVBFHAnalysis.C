@@ -113,7 +113,7 @@ void ExampleVBFHAnalysis::processEvents()
   Long64_t nbytes =0 , nb = 0;
 
   //  Float_t weight = Selection::Weight(_nEvt);
-  Float_t weight = 0.657;
+  Float_t weight = 0.656;
   //  Float_t weight = 1;
 
   for (Long64_t entry=0; entry<_nEvt;entry++) {       
@@ -205,7 +205,7 @@ Int_t ExampleVBFHAnalysis::Analysis()
     fDeltaPhi_precut->Fill(DeltaPhi);
     // Central Jet Et filled below
 
-    Float_t weight2 = 0.657;
+    Float_t weight2 = 0.656;
     //    Float_t weight2 = 1; 
     // Fill pre cut and weighted histos
     fJetPT1_precut_wgt->Fill(jets.at(0).Pt(),weight2);
@@ -320,7 +320,9 @@ Int_t ExampleVBFHAnalysis::ParticleAnalysis(){
     particles.push_back(Particle_PID[i]);
     particlestatus.push_back(Particle_Status[i]);
     particlepts.push_back(Particle_PT[i]);
-    
+   
+    cout << "Particle: " << particles.at(i) << endl;
+ 
     Int_t pdgCode = abs(particles.at(i));
     Int_t status = particlestatus.at(i);
 
@@ -340,7 +342,7 @@ Int_t ExampleVBFHAnalysis::Output()
 {
 
   // Write weighted and baseline-cut histograms to file
-  TFile *_rootFile = new TFile("VBF_inv_8000_weighted.root","RECREATE");
+  TFile *_rootFile = new TFile("VBF_inv_8000_parton_level_weighted.root","RECREATE");
 
   _fJetPT->Write();
   _fJetMass->Write();
@@ -370,7 +372,7 @@ Int_t ExampleVBFHAnalysis::Output()
   _rootFile->Close();
 
   // Write unweighted and precut histograms to file
-  TFile *_rootFile1 = new TFile("VBF_inv_8000_precut_unweighted.root","RECREATE");
+  TFile *_rootFile1 = new TFile("VBF_inv_8000_parton_leve_precut_unweighted.root","RECREATE");
   fJetPT1_precut->Write();
   fJetPT2_precut->Write();
   fEtaDP_precut->Write();
@@ -386,7 +388,7 @@ Int_t ExampleVBFHAnalysis::Output()
   _rootFile1->Close();
   
   // Write weighted and precut histograms to file
-  TFile *_rootFile2 = new TFile("VBF_inv_8000_precut_weighted.root","RECREATE");
+  TFile *_rootFile2 = new TFile("VBF_inv_8000_parton_level_precut_weighted.root","RECREATE");
   fJetPT1_precut_wgt->Write();
   fJetPT2_precut_wgt->Write();
   fEtaDP_precut_wgt->Write();

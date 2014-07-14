@@ -36,7 +36,6 @@ class Selection{
 
   // Delta Eta cut
   static bool DEtaCut(float dEtajj){ return dEtajj > 4.2; }
-
   // Eta scalar product cut
   static bool DPEta(float etaDP){ return etaDP < 0; }
 
@@ -73,8 +72,8 @@ class Selection{
   static float DeltaEtaJJCut() { return 4.2; } 
   
   static float METCut() { return 150; }
-  
 
 };
+  
 
 #endif
