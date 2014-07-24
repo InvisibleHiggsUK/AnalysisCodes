@@ -185,7 +185,14 @@ Int_t ExampleVBFHAnalysis::Analysis()
     jets.push_back(Jet1);
     Jet2.SetPtEtaPhiM(jetpts.at(1),jeteta.at(1),jetphi.at(1),jetmass.at(1));
     jets.push_back(Jet2);
-       
+    sort(jets.begin(), jets.end(), order_gt()); // Ensuring jets are arranged in order of PT
+    
+    if ( (jets.at(0).Pt() - jets.at(1).Pt()) < 0) { 
+      std::cerr << "\n ERROR JETS NOT ORDERED IN PT" << std::endl;
+      throw std::exception();
+    }
+    
+
     // Construct kinematic variables with dijet 
     Float_t mjj = (Jet1 + Jet2).M();
     Float_t EtaDP = Jet1.Eta()*Jet2.Eta();

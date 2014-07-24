@@ -21,6 +21,7 @@
 #include <TLorentzVector.h>
 #include <vector>
 #include <iterator>
+#include <algorithm>
 
 using namespace std;
 
@@ -857,3 +858,9 @@ Int_t ExampleVBFHAnalysis::Cut()
    return 1;
 }
 #endif
+
+struct order_gt : public std::binary_function<TLorentzVector, TLorentzVector, bool> {
+  bool operator()(const TLorentzVector& x, const TLorentzVector& y) {
+    return ( x.Pt() > y.Pt() ) ;
+  }
+};
