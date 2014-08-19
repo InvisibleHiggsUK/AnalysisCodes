@@ -440,11 +440,11 @@ public :
    virtual void     Init(TTree *tree);
    virtual void     processEvents();
    virtual Bool_t   Notify();
-   virtual void     Show(Long64_t entry = -1);
-   
+   virtual void     Show(Long64_t entry = -1);   
    
  private: 
 
+   // RECO Level
    TH1D* hNJets;
    TH1D* hJet1Pt;
    TH1D* hJet1Eta;
@@ -456,6 +456,7 @@ public :
    TH1D* hMET;
    TH1D* hcenJetEt;
 
+   // GEN Level
    TH1D* hgenJet1Pt;
    TH1D* hgenJet1Eta;
    TH1D* hgenJet2Pt;
@@ -464,9 +465,38 @@ public :
    TH1D* hgenVBFDPhi;
    TH1D* hgenVBFM;
     
+   // Parton Level
+   TH1D* hgenQ1PT;
+   TH1D* hgenQ1Eta;
+   TH1D* hgenQ2PT;
+   TH1D* hgenQ2Eta;
+   TH1D* hgenDEta;
+   TH1D* hgenDPhi;
+   TH1D* hgenVBFMParton;
+   
+   // Parton Level GEN
+   TH1D* hgenQ1PTcuts;
+   TH1D* hgenQ1Etacuts;
+   TH1D* hgenQ2PTcuts;
+   TH1D* hgenQ2Etacuts;
+   TH1D* hgenDEtacuts;
+   TH1D* hgenDPhicuts;
+   TH1D* hgenVBFMPartoncuts;
 
    
-   
+   // N-1 Histograms
+   TH1D* h_Mjj;
+   TH1D* h_DeltaEta;
+   TH1D* h_DeltaPhi;
+   TH1D* h_Jet1Eta;
+   TH1D* h_Jet2Eta;
+   TH1D* h_MET;
+   TH1D* h_Jet1PT;
+   TH1D* h_Jet2PT;
+   TH1D* h_EtaDP;
+   TH1D* h_cenJetEta;
+   TH1D* h_Njets;
+
 };
 
 #endif
