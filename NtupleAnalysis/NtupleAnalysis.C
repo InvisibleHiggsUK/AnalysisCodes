@@ -109,7 +109,9 @@ void NtupleAnalysis::processEvents()
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
    
+      if(jentry % 1000 == 0){
       cout << "******* NEW ENTRY[" << jentry << "]" << endl;
+      }
 
       if( printout ) continue;
 
@@ -194,16 +196,17 @@ void NtupleAnalysis::processEvents()
 
       Bool_t TrigCut    = Selection::TriggerCuts(jet1Pt,jet2Pt,EtaDP,vbfDEta,vbfM,met);
       Bool_t EtaCut     = Selection::EtaCut(jet1Eta) && Selection::EtaCut(jet2Eta);
-      Bool_t JetPTCut   = Selection::JetCut(jet1Pt) && Selection::JetCut(jet2Pt);
-      Bool_t EtaDPCut   = Selection::DPEta(EtaDP);
+      Bool_t JetPTCut   = Selection::JetCut(jet1Pt, jet1Eta, jet2Pt, jet2Eta); // Eta cut incorporated here
+      Bool_t EtaDPCut   = Selection::DPEta(jet1Eta, jet2Eta);
       Bool_t DEtaCut    = Selection::DEtaCut(vbfDEta);
       Bool_t METCut     = Selection::METcut(met);
       Bool_t InvMassCut = Selection::MassCut(vbfM);
-      Bool_t CJVeto     = Selection::CJVCut(jet1Eta,jet2Eta,cenJetEta,cenJetEt);
+      Bool_t CJVeto     = Selection::CJVCut(jet1Eta,jet2Eta,cenJetEta,cenJetEt); // Different to AN
+      Bool_t CenJetVeto = Selection::CenJetVeto(cenJetEt);
       Bool_t PhiCut     = Selection::PhiCut(vbfDPhi);
       
       if(TrigCut) {  nTrigger++; }
-      if(EtaCut)  {  nEta++; }
+      if(EtaCut)  {  nEta++; } // Not used 
       if(JetPTCut){  nJetPT++; }
       if(EtaDPCut){  nEtaDP++; }
       if(DEtaCut) {  nDEta++; }
@@ -213,14 +216,14 @@ void NtupleAnalysis::processEvents()
       if(PhiCut)  {   nDPhi++; }
 
       // Calculate suriving event yields
-      if(TrigCut && EtaCut){ nYield0++; }
-      if(TrigCut && EtaCut && JetPTCut){ nYield1++; }
-      if(TrigCut && EtaCut && JetPTCut && EtaDPCut){ nYield2++; }
-      if(TrigCut && EtaCut && JetPTCut && EtaDPCut && DEtaCut){ nYield3++; }
-      if(TrigCut && EtaCut && JetPTCut && EtaDPCut && DEtaCut && METCut){ nYield4++; } 
-      if(TrigCut && EtaCut && JetPTCut && EtaDPCut && DEtaCut && METCut && InvMassCut){ nYield5++; }
-      if(TrigCut && EtaCut && JetPTCut && EtaDPCut && DEtaCut && METCut && InvMassCut && !CJVeto){ nYield6++; }
-      if(TrigCut && EtaCut && JetPTCut && EtaDPCut && DEtaCut && METCut && InvMassCut && !CJVeto && PhiCut){ nYield7++; }
+      if(TrigCut){ nYield0++; }
+      if(TrigCut && JetPTCut){ nYield1++; } // JetPTcut includes eta < 4.7 too
+      if(TrigCut && JetPTCut && EtaDPCut){ nYield2++; }
+      if(TrigCut && JetPTCut && EtaDPCut && DEtaCut){ nYield3++; }
+      if(TrigCut && JetPTCut && EtaDPCut && DEtaCut && METCut){ nYield4++; } 
+      if(TrigCut && JetPTCut && EtaDPCut && DEtaCut && METCut && InvMassCut){ nYield5++; }
+      if(TrigCut && JetPTCut && EtaDPCut && DEtaCut && METCut && InvMassCut && CenJetVeto){ nYield6++; }
+      if(TrigCut && JetPTCut && EtaDPCut && DEtaCut && METCut && InvMassCut && CenJetVeto && PhiCut){ nYield7++; }
 
       // Create N-1 Histograms
       if(PLCuts && EtaCut && JetPTCut && EtaDPCut && DEtaCut && METCut && !CJVeto && PhiCut){ h_Mjj->Fill(vbfM); }
