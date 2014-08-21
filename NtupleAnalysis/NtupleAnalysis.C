@@ -35,7 +35,7 @@ class ExRootResult;
 using namespace std;
 
 int Surviving_events;
-int nTrigger, nJetPT, nEtaDP, nEta, nDPhi, nMET, nJetMass, nDEta, nCJV;
+int nTrigger, nJet1PT, nJet2PT, nJet1Eta, nJet2Eta, nEtaDP, nEta, nDPhi, nMET, nJetMass, nDEta, nCJV;
 int nYield0, nYield1, nYield2, nYield3, nYield4, nYield5, nYield6, nYield7;
 int ANyield0, ANyield1, ANyield2, ANyield3, ANyield4, ANyield5, ANyield6, ANyield7, ANyield8, ANyield9, ANyield10;
 
@@ -99,9 +99,21 @@ void NtupleAnalysis::processEvents()
    h_Jet2PT     = new TH1D("Jet2PT", "Jet2PT", 80, 0, 400);
    h_EtaDP      = new TH1D("EtaDPjj","EtaDPjj", 50, -10, 2);
    h_cenJetEta  = new TH1D("cenJetEta","cenJetEta", 50, -5, 5);
+   h_cenJetEt   = new TH1D("cenJetEt","cenJetEt",30, 0, 150);
    h_Njets      = new TH1D("NJets","NJets",10, 0, 10);
    
+   // Precut Histograms
 
+   hMjj_precut  = new TH1D("InvMass","InvMass",40, 0., 4000);
+   hDeltaEta_precut = new TH1D("DeltaEtaJJ","DeltaEtaJJ", 50, 0, 10);
+   hDeltaPhi_precut = new TH1D("DeltaPhiJJ","DeltaPhiJJ",63, 0.0, TMath::Pi());
+   hJet1Eta_precut  = new TH1D("Jet1Eta","Jet1Eta", 50, -10, 10);
+   hJet2Eta_precut  = new TH1D("Jet2Eta","Jet2Eta", 50, -10, 10);
+   hJet1PT_precut   = new TH1D("Jet1PT","Jet1PT", 80, 0, 400);
+   hJet2PT_precut   = new TH1D("Jet2PT","Jet2PT", 80, 0, 400);
+   hCJEt_precut     = new TH1D("CenJetEt","CenJetEt", 30, 0.0, 150);
+   hEtaDP_precut    = new TH1D("EtaDP","EtaDP", 50, -10, 3);
+   
 
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
@@ -135,9 +147,20 @@ void NtupleAnalysis::processEvents()
 	std::cout << "AN Mjj: "        << ANyield8*weight2 << std::endl;
 	std::cout << "AN CJV: "        << ANyield9*weight2 << std::endl;
 	std::cout << "AN DeltaPhi: "   << ANyield10*weight2 << std::endl;
+	std::cout << "" << std::endl;
+	// Print out # events from N-1
+	std::cout << "N-1 nJet1PT: " << nJet1PT << std::endl;
+	std::cout << "N-1 nJet2PT: " << nJet2PT << std::endl;
+	std::cout << "N-1 nEtaDP: " << nEtaDP << std::endl;
+	std::cout << "N-1 nDPhi: " << nDPhi << std::endl;
+	std::cout << "N-1 nDEta: " << nDEta << std::endl;
+	std::cout << "N-1 nJetMass: " << nJetMass << std::endl;
+	std::cout << "N-1 nCJV: " << nCJV << std::endl;
+	std::cout << "N-1 Jet1Eta: " << nJet1Eta << std::endl;
+	std::cout << "N-1 Jet2Eta: " << nJet2Eta << std::endl;
+	std::cout << "N-1 MET: " << nMET << std::endl;
       }
-	  
-      
+	        
       
       // Compute variables for cuts on GEN level quantities
       // Jets > 30 GeV, InvMass > 600 GeV
@@ -195,6 +218,7 @@ void NtupleAnalysis::processEvents()
       Bool_t PLCuts = Selection::PLCuts(mcQ1Pt,mcQ2Pt,mcVBFM);
 
       Bool_t TrigCut    = Selection::TriggerCuts(jet1Pt,jet2Pt,EtaDP,vbfDEta,vbfM,met);
+      Bool_t TriggerAN = AnalysisCuts::Trigger(hltResult2); // AN cuts
       Bool_t EtaCut     = Selection::EtaCut(jet1Eta) && Selection::EtaCut(jet2Eta);
       Bool_t JetPTCut   = Selection::JetCut(jet1Pt, jet1Eta, jet2Pt, jet2Eta); // Eta cut incorporated here
       Bool_t EtaDPCut   = Selection::DPEta(jet1Eta, jet2Eta);
@@ -204,7 +228,7 @@ void NtupleAnalysis::processEvents()
       Bool_t CJVeto     = Selection::CJVCut(jet1Eta,jet2Eta,cenJetEta,cenJetEt); // Different to AN
       Bool_t CenJetVeto = Selection::CenJetVeto(cenJetEt);
       Bool_t PhiCut     = Selection::PhiCut(vbfDPhi);
-      
+      /*      
       if(TrigCut) {  nTrigger++; }
       if(EtaCut)  {  nEta++; } // Not used 
       if(JetPTCut){  nJetPT++; }
@@ -212,9 +236,9 @@ void NtupleAnalysis::processEvents()
       if(DEtaCut) {  nDEta++; }
       if(METCut)  {  nMET++; }
       if(InvMassCut){ nJetMass++; }
-      if(!CJVeto) {  nCJV++; }
+      //      if(!CJVeto) {  nCJV++; }
       if(PhiCut)  {   nDPhi++; }
-
+      */
       // Calculate suriving event yields
       if(TrigCut){ nYield0++; }
       if(TrigCut && JetPTCut){ nYield1++; } // JetPTcut includes eta < 4.7 too
@@ -225,21 +249,21 @@ void NtupleAnalysis::processEvents()
       if(TrigCut && JetPTCut && EtaDPCut && DEtaCut && METCut && InvMassCut && CenJetVeto){ nYield6++; }
       if(TrigCut && JetPTCut && EtaDPCut && DEtaCut && METCut && InvMassCut && CenJetVeto && PhiCut){ nYield7++; }
 
-      // Create N-1 Histograms
-      if(PLCuts && EtaCut && JetPTCut && EtaDPCut && DEtaCut && METCut && !CJVeto && PhiCut){ h_Mjj->Fill(vbfM); }
-      if(PLCuts && EtaCut && JetPTCut && EtaDPCut && METCut && InvMassCut && !CJVeto && PhiCut){ h_DeltaEta->Fill(vbfDEta); }
-      if(PLCuts && EtaCut && JetPTCut && EtaDPCut && DEtaCut && METCut && InvMassCut && !CJVeto){ h_DeltaPhi->Fill(vbfDPhi); }
-      if(PLCuts && EtaCut && EtaDPCut && DEtaCut && METCut && InvMassCut && !CJVeto && PhiCut){ h_Jet1PT->Fill(jet1Pt); }
-      if(PLCuts && EtaCut && EtaDPCut && DEtaCut && METCut && InvMassCut && !CJVeto && PhiCut){ h_Jet2PT->Fill(jet2Pt); }
-      if(PLCuts && EtaDPCut && JetPTCut && DEtaCut && METCut && InvMassCut && !CJVeto && PhiCut){ h_Jet1Eta->Fill(jet1Eta); }
-      if(PLCuts && EtaDPCut && JetPTCut && DEtaCut && METCut && InvMassCut && !CJVeto && PhiCut){ h_Jet2Eta->Fill(jet2Eta); }
-      if(PLCuts && EtaCut && JetPTCut && DEtaCut && METCut && InvMassCut && !CJVeto && PhiCut){ h_EtaDP->Fill(EtaDP); }
-      if(PLCuts && EtaCut && JetPTCut && EtaDPCut && DEtaCut && InvMassCut && !CJVeto && PhiCut){ h_MET->Fill(met); }
-      if(PLCuts && EtaCut && JetPTCut && EtaDPCut && DEtaCut && METCut && InvMassCut && PhiCut){ h_cenJetEta->Fill(cenJetEta); }
-      
+      // Create N-1 Histograms Apply Bit
+      if(PLCuts && TriggerAN && EtaCut && JetPTCut && EtaDPCut && DEtaCut && METCut && !CJVeto && PhiCut){ h_Mjj->Fill(vbfM); nJetMass++; }
+      if(PLCuts && TriggerAN && EtaCut && JetPTCut && EtaDPCut && METCut && InvMassCut && !CJVeto && PhiCut){ h_DeltaEta->Fill(vbfDEta); nDEta++;  }
+      if(PLCuts && TriggerAN && EtaCut && JetPTCut && EtaDPCut && DEtaCut && METCut && InvMassCut && !CJVeto){ h_DeltaPhi->Fill(vbfDPhi); nDPhi++; }
+      if(PLCuts && TriggerAN && EtaCut && EtaDPCut && DEtaCut && METCut && InvMassCut && !CJVeto && PhiCut){ h_Jet1PT->Fill(jet1Pt); nJet1PT++; }
+      if(PLCuts && TriggerAN && EtaCut && EtaDPCut && DEtaCut && METCut && InvMassCut && !CJVeto && PhiCut){ h_Jet2PT->Fill(jet2Pt); nJet2PT++; }
+      if(PLCuts && TriggerAN && EtaDPCut && JetPTCut && DEtaCut && METCut && InvMassCut && !CJVeto && PhiCut){ h_Jet1Eta->Fill(jet1Eta); nJet1Eta++; }
+      if(PLCuts && TriggerAN && EtaDPCut && JetPTCut && DEtaCut && METCut && InvMassCut && !CJVeto && PhiCut){ h_Jet2Eta->Fill(jet2Eta); nJet2Eta++; }
+      if(PLCuts && TriggerAN && EtaCut && JetPTCut && DEtaCut && METCut && InvMassCut && !CJVeto && PhiCut){ h_EtaDP->Fill(EtaDP); nEtaDP++; }
+      if(PLCuts && TriggerAN && EtaCut && JetPTCut && EtaDPCut && DEtaCut && InvMassCut && !CJVeto && PhiCut){ h_MET->Fill(met); nMET++; }
+      if(PLCuts && TriggerAN && EtaCut && JetPTCut && EtaDPCut && DEtaCut && METCut && InvMassCut && PhiCut){ h_cenJetEta->Fill(cenJetEta); }
+      if(PLCuts && TriggerAN && EtaCut && JetPTCut && EtaDPCut && DEtaCut && METCut && InvMassCut && PhiCut){ h_cenJetEt->Fill(cenJetEt); nCJV++; } 
+      // All cuts except CJVeto, then plot Et of central jet
 
       // Applying AN Delicate Cuts
-      Bool_t TriggerAN = AnalysisCuts::Trigger(hltResult2);
       Bool_t METClean = (metflag0 && metflag1 && metflag2 && metflag3 && metflag4 && metflag5 && metflag6 && metflag7 && metflag8);
       Bool_t EVeto = AnalysisCuts::EVeto(ele1Pt);
       Bool_t MuVeto = AnalysisCuts::MuVeto(mu1Pt);
@@ -265,9 +289,21 @@ void NtupleAnalysis::processEvents()
 
       
 
+      // Filling precut histograms
+      
+      hMjj_precut->Fill(vbfM);
+      hDeltaEta_precut->Fill(vbfDEta);
+      hDeltaPhi_precut->Fill(vbfDPhi);
+      hJet1Eta_precut->Fill(jet1Eta);
+      hJet2Eta_precut->Fill(jet2Eta);
+      hJet1PT_precut->Fill(jet1Pt);
+      hJet2PT_precut->Fill(jet2Pt);
+      hCJEt_precut->Fill(cenJetEt);
+      hEtaDP_precut->Fill(EtaDP);
       
       
-
+      
+      //****** OUTPUT *******
       
 
       // Outputing histos to file
@@ -320,11 +356,24 @@ void NtupleAnalysis::processEvents()
       h_Jet1PT->Write();
       h_Jet2PT->Write();
       h_EtaDP->Write();
+      h_cenJetEt->Write();
       h_cenJetEta->Write();
       _rootfile4->Write();
       _rootfile4->Close();
       
 
+      TFile *_rootfile5 = new TFile("FullSim_precut_invH_8TeV.root","RECREATE");
+      hMjj_precut->Write();
+      hDeltaEta_precut->Write();
+      hDeltaPhi_precut->Write();
+      hJet1Eta_precut->Write();
+      hJet2Eta_precut->Write();
+      hJet1PT_precut->Write();
+      hJet2PT_precut->Write();
+      hCJEt_precut->Write();
+      hEtaDP_precut->Write();
+      _rootfile5->Write();
+      _rootfile5->Close();
 
 
    }

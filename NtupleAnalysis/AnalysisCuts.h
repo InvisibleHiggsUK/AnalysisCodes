@@ -21,7 +21,7 @@ class AnalysisCuts{
   
   static bool EtaFB(float jet1Eta, float jet2Eta){ return (jet1Eta*jet2Eta) < 0. ; }
   
-  static bool DeltaEta(float vbfDeta){ return vbfDeta > 4.2; }
+  static bool DeltaEta(float vbfDeta){ return abs(vbfDeta) > 4.2; }
   
   static bool MET(float met){ return met > 130. ; }
   

@@ -25,7 +25,9 @@ class Selection{
   }
 
   // Offline cuts, dijet pt
-  static bool JetCut(float pt){ return pt > 50.; }
+  static bool JetCut(float jet1pt, float jet1eta, float jet2pt, float jet2eta){
+    return (jet1pt > 50. && abs(jet1eta) < 4.7 && jet2pt > 50. && abs(jet2eta) < 4.7); 
+  }  
   
   // Eta cut
   static bool EtaCut(float eta){ return (eta) < 4.7; }
@@ -40,13 +42,13 @@ class Selection{
   static bool MassCut(float m_jj){ return m_jj > 1100; }
 
   // Delta Eta cut
-  static bool DEtaCut(float dEtajj){ return dEtajj > 4.2; }
+  static bool DEtaCut(float dEtajj){ return abs(dEtajj) > 4.2; }
 
   // Eta scalar product cut
-  static bool DPEta(float etaDP){ return etaDP < 0; }
+  static bool DPEta(float jet1eta, float jet2eta){ return (jet1eta*jet2eta) < 0; }
 
   // Central Jet Veto cut
-  static bool CJVCut(float eta1, float eta2, float eta3, float pt3){ return ((eta1 < eta3 && eta3 < eta2 && pt3 > 30) || (eta2 < eta3 && eta3 < eta1 && pt3 > 30)); }
+  static bool CJVCut(float eta1, float eta2, float eta3, float et3){ return ((eta1 < eta3 && eta3 < eta2 && et3 > 30) || (eta2 < eta3 && eta3 < eta1 && et3 > 30)); }
 
   // Central Jet Eta
   static bool CJEta(float eta_jet_1, float eta_jet_2, float eta_jet_3)
@@ -56,6 +58,8 @@ class Selection{
   
   // Central Jet Pt
   static bool CJPt(float pt_jet_3){ return pt_jet_3 > 30; }
+
+  static bool CenJetVeto(float cenjetET){ return cenjetET < 30.; }
 
 
 

@@ -455,6 +455,7 @@ public :
    TH1D* hvbfM;
    TH1D* hMET;
    TH1D* hcenJetEt;
+   
 
    // GEN Level
    TH1D* hgenJet1Pt;
@@ -495,7 +496,19 @@ public :
    TH1D* h_Jet2PT;
    TH1D* h_EtaDP;
    TH1D* h_cenJetEta;
+   TH1D* h_cenJetEt;
    TH1D* h_Njets;
+
+   // Precut histograms
+   TH1D* hMjj_precut;
+   TH1D* hDeltaEta_precut;
+   TH1D* hDeltaPhi_precut;
+   TH1D* hJet1Eta_precut;
+   TH1D* hJet2Eta_precut;
+   TH1D* hJet1PT_precut;
+   TH1D* hJet2PT_precut;
+   TH1D* hCJEt_precut;
+   TH1D* hEtaDP_precut;
 
 };
 
