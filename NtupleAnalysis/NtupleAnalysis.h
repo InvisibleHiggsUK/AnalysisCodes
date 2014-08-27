@@ -455,7 +455,7 @@ public :
    TH1D* hvbfM;
    TH1D* hMET;
    TH1D* hcenJetEt;
-   
+   TH1D* hcenJetEta;
 
    // GEN Level
    TH1D* hgenJet1Pt;
@@ -499,6 +499,20 @@ public :
    TH1D* h_cenJetEt;
    TH1D* h_Njets;
 
+   // N-2 Plots
+   TH1D* h2_Mjj;
+   TH1D* h2_DeltaEta;
+   TH1D* h2_DeltaPhi;
+   TH1D* h2_Jet1Eta;
+   TH1D* h2_Jet2Eta;
+   TH1D* h2_MET;
+   TH1D* h2_Jet1PT;
+   TH1D* h2_Jet2PT;
+   TH1D* h2_EtaDP;
+   TH1D* h2_cenJetEta;
+   TH1D* h2_cenJetEt;
+   TH1D* h2_Njets;
+
    // Precut histograms
    TH1D* hMjj_precut;
    TH1D* hDeltaEta_precut;
@@ -509,6 +523,15 @@ public :
    TH1D* hJet2PT_precut;
    TH1D* hCJEt_precut;
    TH1D* hEtaDP_precut;
+   TH1D* hMET_precut;
+    
+   // Excess histograms
+   TH1D* hJetET_excess;
+   TH1D* hJetEta_excess;
+   
+   std::vector<Float_t> JetEtas;
+   std::vector<Float_t> JetEts;
+
 
 };
 
