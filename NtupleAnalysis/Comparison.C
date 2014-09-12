@@ -6,7 +6,7 @@
 // The histograms in both DELPHES samples are labelled: 
 // InvMass, DeltaEta, DeltaPhi EtaDP, CJEt, MET, Jet1PT JetEta1t, Jet2PT, JetEta2
 //
-// They have either no weight and no baseline cuts, no weight and baseline cuts applied, 
+// They have either no weightand no baseline cuts, no weight and baseline cuts applied, 
 // or weighted to 19.5 1/fb with baseline cuts applied
 //
 // The histograms in the Fullsim ntuples are labelled:

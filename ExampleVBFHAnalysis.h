@@ -27,13 +27,13 @@ using namespace std;
 
 const Int_t kMaxEvent = 1;
 const Int_t kMaxRwgt = 1;
-const Int_t kMaxParticle = 1082;
-const Int_t kMaxTrack = 953;
-const Int_t kMaxTower = 2966;
-const Int_t kMaxEFlowTrack = 953;
-const Int_t kMaxEFlowTower = 2793;
-const Int_t kMaxGenJet = 188;
-const Int_t kMaxJet = 114;
+const Int_t kMaxParticle = 2117;
+const Int_t kMaxTrack = 136;
+const Int_t kMaxTower = 776;
+const Int_t kMaxEFlowTrack = 705;
+const Int_t kMaxEFlowTower = 705;
+const Int_t kMaxGenJet = 153;
+const Int_t kMaxJet = 126;
 const Int_t kMaxElectron = 1;
 const Int_t kMaxPhoton = 3;
 const Int_t kMaxMuon = 1;
@@ -550,6 +550,20 @@ public :
    TH1D* fCJEt_precut_wgt;
    TH1D* fDeltaPhi_precut_wgt;
    
+   // N-2
+   TH1D* _f2JetMass;
+   TH1D* _f2Mjj;
+   TH1D* _f2DeltaEta;
+   TH1D* _f2DeltaPhi;
+   TH1D* _f2EtaDP;
+   TH1D* _f2CJEt;
+   TH1D* _f2CJVEt;
+   TH1D* _f2MET;
+   TH1D* _f21stJetPT;
+   TH1D* _f22ndJetPT;
+   TH1D* _f2JetEta2;
+   TH1D* _f2JetEta1;
+
 
    std::vector<Int_t> njets;
    std::vector<Float_t> jetpts;
@@ -584,9 +598,9 @@ public :
 ExampleVBFHAnalysis::ExampleVBFHAnalysis(TTree *tree) : fChain(0) 
 {
   if (tree == 0) {
-    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("event_vbf_inv_8TeV_withPU.root");
+    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("event_vbf_inv_8000_pythiaTune.root");
     if (!f || !f->IsOpen()) {
-      f = new TFile("event_vbf_inv_8TeV_withPU.root");
+      f = new TFile("event_vbf_inv_8000_pythiaTune.root");
     }
     f->GetObject("Delphes",tree);
   }
