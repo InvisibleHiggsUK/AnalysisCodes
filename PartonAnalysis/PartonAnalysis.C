@@ -1,3 +1,7 @@
+// Analysis code to extract the cross
+// section for VBFNLO + Parton Level
+// Cuts that appear to pre-exist
+
 #define PartonAnalysis_cxx
 #include "PartonAnalysis.h"
 #include <TH2.h>
@@ -28,9 +32,9 @@ void PartonAnalysis::processEvents()
   TH1::SetDefaultSumw2();
   
   fQ1PT  =   new TH1D("q1Pt"   , "q1Pt"   , 100,  0, 500);
-  fQ1Eta =   new TH1D("q1Eta"  , "q1Eta"  , 100, -6,  -6);
+  fQ1Eta =   new TH1D("q1Eta"  , "q1Eta"  , 100, -6,  6);
   fQ2PT  =   new TH1D("q2Pt"   , "q2Pt"   , 100,  0, 500);
-  fQ2Eta =   new TH1D("q2Eta"  , "q2Eta"  , 100, -6,  -6);
+  fQ2Eta =   new TH1D("q2Eta"  , "q2Eta"  , 100, -6,  6);
 
   fGenDEta = new TH1D("GenDEta", "GenDEta",  50,  0,  10);
   fGenDPhi = new TH1D("GenDPhi", "GenDPhi",  64,  0,  TMath::Pi()) ;
@@ -52,6 +56,7 @@ void PartonAnalysis::processEvents()
       cout << "***** NEW ENTRY[" << jentry << "]" << endl;
       
       Int_t nParticles = sizeof(Particle_PID)/sizeof(Particle_PID[0]);
+      //      Float_t weight = 0.65;
 
       for(Int_t i=0; i<nParticles; ++i){
 	particles.push_back(Particle_PID[i]);

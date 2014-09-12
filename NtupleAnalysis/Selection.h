@@ -20,7 +20,7 @@ class Selection{
 
   // Represents Trigger implementation of AN
   static bool TriggerCuts(float jetpt1_trig, float jetpt2_trig, float eta_trig, float dEtajj_trig, float mjj_trig, float met_trig)
-  {
+      {
     return (jetpt1_trig > 40 && jetpt2_trig > 40 && eta_trig < 0 && dEtajj_trig > 3.5 && mjj_trig > 800 && met_trig > 65);
   }
 
