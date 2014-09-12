@@ -39,8 +39,6 @@ class Partons{
   float tquarks() const { return tquark; }
   float gluons()  const { return gluon; }
 
-
-
  private:
 
   float dquark;  // 1
