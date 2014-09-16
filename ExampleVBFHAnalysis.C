@@ -398,7 +398,7 @@ Int_t ExampleVBFHAnalysis::Output()
 {
   
   // Write weighted and baseline-cut histograms to file
-  TFile *_rootFile = new TFile("VBF_inv_8000_unweighted_ZTune.root","RECREATE");
+  /*  TFile *_rootFile = new TFile("VBF_inv_8000_unweighted_ZTune_PU.root","RECREATE");
 
   _fJetPT->Write();
   _fJetMass->Write();
@@ -428,7 +428,7 @@ Int_t ExampleVBFHAnalysis::Output()
   _rootFile->Close();
 
   // Write unweighted and precut histograms to file
-  /*  TFile *_rootFile1 = new TFile("VBF_inv_8000_precut_unweighted_ZTune.root","RECREATE");
+  TFile *_rootFile1 = new TFile("VBF_inv_8000_precut_unweighted_ZTune_PU.root","RECREATE");
   fJetPT1_precut->Write();
   fJetPT2_precut->Write();
   fEtaDP_precut->Write();
@@ -444,7 +444,7 @@ Int_t ExampleVBFHAnalysis::Output()
   _rootFile1->Close();
   
   // Write weighted and precut histograms to file
-  TFile *_rootFile2 = new TFile("VBF_inv_8000_precut_weighted_ZTune.root","RECREATE");
+  TFile *_rootFile2 = new TFile("VBF_inv_8000_precut_weighted_ZTune_PU.root","RECREATE");
   fJetPT1_precut_wgt->Write();
   fJetPT2_precut_wgt->Write();
   fEtaDP_precut_wgt->Write();
@@ -459,7 +459,7 @@ Int_t ExampleVBFHAnalysis::Output()
   _rootFile2->Write();
   _rootFile2->Close();
 
-  TFile* _rootfile3 = new TFile("VBF_inv_8000_Nminus2_8TeV_ZTune.root","RECREATE");
+  TFile* _rootfile3 = new TFile("VBF_inv_8000_Nminus2_8TeV_ZTune_PU.root","RECREATE");
   _f2JetMass->Write();
   _f2Mjj->Write();
   _f2DeltaEta->Write();
@@ -474,8 +474,8 @@ Int_t ExampleVBFHAnalysis::Output()
   _f2JetEta2->Write();
   _rootfile3->Write();
   _rootfile3->Close();
-  */
   
+  */  
   return 0;
 
 }
